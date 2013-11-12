@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Students Forum</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="static/jquery.mobile-1.3.2.min.css">
+        <script type="text/javascript" src="static/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="static/jquery.mobile-1.3.2.min.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="login_page">
+            <div data-role="header">
+                <h1>
+                    Login to the forum
+                </h1>
+            </div>
+            <div data-role="content">
+                <form>
+                    <ul data-role="listview" data-inset="true">
+                        <li data-role="fieldcontain">
+                            <label for="login_name">Username:</label>
+                            <input type="text" id="login_name" placeholder="username" name="name">
+                        </li>
+                        <li data-role="fieldcontain">
+                            <label for="login_password">Password:</label>
+                            <input type="text" id="login_password" placeholder="password" name="password">
+                        </li>
+                    </ul>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
