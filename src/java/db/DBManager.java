@@ -44,7 +44,7 @@ public class DBManager implements Serializable {
     public User authenticate(String userName, String password) {
         User u = null;
         try {
-            String query = "SELECT * FROM user WHERE user_name = ? AND user_password = ?";
+            String query = "SELECT * FROM \"user\" WHERE user_name = ? AND user_password = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setString(1, userName);
@@ -99,7 +99,7 @@ public class DBManager implements Serializable {
     public LinkedList<Post> getGroupPosts(Group g) {
         LinkedList<Post> p = new LinkedList<>();
         try {
-            String query = "SELECT * FROM post NATURAL JOIN user WHERE group_id = ?";
+            String query = "SELECT * FROM post NATURAL JOIN \"user\" WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, g.getId());

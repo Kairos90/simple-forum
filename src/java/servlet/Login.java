@@ -6,12 +6,16 @@
 
 package servlet;
 
+import db.DBManager;
+import db.User;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Date;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -19,8 +23,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Login extends HttpServlet {
     
-    private static final String PAGE_HTML =
-            "<form>"
+    private static final String ERROR_HTML =
+            "<p style=\"color: red\">Login failed, please check your data</p>";
+    
+    private static final String FORM_HTML =
+            "<form action=\"login\" method=\"post\" data-ajax=\"false\">"
             + "<ul data-role=\"listview\" data-inset=\"true\">"
             + "<li data-role=\"fieldcontain\">"
             + "<label for=\"login_name\">Username:</label>"
@@ -28,7 +35,7 @@ public class Login extends HttpServlet {
             + "</li>"
             + "<li data-role=\"fieldcontain\">"
             + "<label for=\"login_password\">Password:</label>"
-            + "<input type=\"text\" id=\"login_password\" placeholder=\"password\" name=\"password\">"
+            + "<input type=\"password\" id=\"login_password\" placeholder=\"password\" name=\"password\">"
             + "</li>"
             + "</ul>"
             + "<button type=\"submit\">Login</button>"
@@ -46,7 +53,7 @@ public class Login extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HTML.printPage(response.getWriter(), "Login", PAGE_HTML);
+        HTML.printPage(response.getWriter(), "Login", FORM_HTML);
     }
 
     /**
@@ -60,7 +67,19 @@ public class Login extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        DBManager dbmanager = (DBManager) getServletContext().getAttribute("dbmanager");
+        User user = dbmanager.authenticate(request.getParameter("name"), request.getParameter("password"));
+        if(user == null) {
+            HTML.printPage(response.getWriter(), "Login", ERROR_HTML + FORM_HTML);
+        } else {
+            HttpSession session = request.getSession();
+            Cookie loginTime = new Cookie("loginTime", new Date().getTime() + "");
+            loginTime.setMaxAge(-1);
+            loginTime.setPath("/");
+            response.addCookie(loginTime);
+            session.setAttribute("user", user);
+            response.sendRedirect("/forum");
+        }
     }
 
     /**

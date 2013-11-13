@@ -4,6 +4,22 @@
         <description>contextListener</description>
         <listener-class>listener.ContextListener</listener-class>
     </listener>
+    <filter>
+        <filter-name>
+            LoginFilter
+        </filter-name>
+        <filter-class>
+            filter.LoginFilter
+        </filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>
+            LoginFilter
+        </filter-name>
+        <url-pattern>
+            /forum/*
+        </url-pattern>
+    </filter-mapping>
     <welcome-file-list>
         <welcome-file>login</welcome-file>
     </welcome-file-list>
@@ -17,7 +33,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
-        <url-pattern>/home</url-pattern>
+        <url-pattern>/forum</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>

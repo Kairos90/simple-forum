@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author paolo
  */
 public class Home extends HttpServlet {
+    
+    //private static final String s;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
