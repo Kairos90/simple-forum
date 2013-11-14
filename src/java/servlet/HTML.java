@@ -23,9 +23,9 @@ public class HTML {
             "</title>"
             + "<meta charset=\"UTF-8\">"
             + "<meta name=\"viewport\" content=\"width=device-width\">"
-            + "<link rel=\"stylesheet\" href=\"static/jquery.mobile-1.3.2.min.css\">"
-            + "<script type=\"text/javascript\" src=\"static/jquery-1.9.1.min.js\"></script>"
-            + "<script type=\"text/javascript\" src=\"static/jquery.mobile-1.3.2.min.js\"></script>"
+            + "<link rel=\"stylesheet\" href=\"/static/jquery.mobile-1.3.2.min.css\">"
+            + "<script type=\"text/javascript\" src=\"/static/jquery-1.9.1.min.js\"></script>"
+            + "<script type=\"text/javascript\" src=\"/static/jquery.mobile-1.3.2.min.js\"></script>"
             + "</head>"
             + "<body>"
             + "<div data-role=\"header\">";

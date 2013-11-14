@@ -48,7 +48,7 @@ public class Home extends HttpServlet {
         Date loginTime = null;
         for (Cookie cookie : cookies) {
             if ("loginTime".equals(cookie.getName())) {
-                loginTime = new Date(Long.getLong(cookie.getValue()));
+                loginTime = new Date(Long.parseLong(cookie.getValue()));
                 break;
             }
         }
