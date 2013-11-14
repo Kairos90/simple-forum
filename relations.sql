@@ -20,7 +20,8 @@ user_id INTEGER,
 group_id INTEGER,
 post_text VARCHAR(32672),
 post_date TIMESTAMP,
-PRIMARY KEY (post_id)
+PRIMARY KEY (post_id),
+INDEX (post_date)
 );
 
 CREATE TABLE "user_group" (

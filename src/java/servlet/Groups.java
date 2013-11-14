@@ -6,10 +6,12 @@
 package servlet;
 
 import db.DBManager;
+import db.Group;
 import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -25,17 +27,17 @@ public class Groups extends HttpServlet {
 
     // TITLE OF GROUPS PAGE & CONTENT OF GROUPS PAGE
     private static final String GROUPS_TITLE = "My Groups";
-    private static final String GROUPS_CONTENT_HEAD_TABLE = "<table data-role=\"table\" id=\"table-custom-2\" data-mode=\"columntoggle\" class=\"ui-body-d ui-shadow table-stripe ui-responsive\" data-column-btn-theme=\"b\" data-column-btn-text=\"Columns to display...\" data-column-popup-theme=\"a\">\n" +
-"         <thead>\n" +
-"           <tr class=\"ui-bar-d\">\n" +
-"             <th data-priority=\"2\">Group Name</th>\n" +
-"             <th>News</th>\n" +
-"             <th data-priority=\"3\">Latest Post</th>\n" +
-"             <th data-priority=\"1\"><abbr title=\"Rotten Tomato Rating\">Modifica</abbr></th>\n" +
-"             <th data-priority=\"5\">Resoconto</th>\n" +
-"           </tr>\n" +
-"         </thead>\n";
-    
+    private static final String GROUPS_CONTENT_HEAD_TABLE = "<table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
+            + "         <thead>\n"
+            + "           <tr class=\"ui-bar-d\">\n"
+            + "             <th>Group Name</th>\n"
+            + "             <th>News</th>\n"
+            + "             <th>Latest Post</th>\n"
+            + "             <th><abbr title=\"Rotten Tomato Rating\">Modifica</abbr></th>\n"
+            + "             <th>Resoconto</th>\n"
+            + "           </tr>\n"
+            + "         </thead>\n";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -51,91 +53,43 @@ public class Groups extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         //SETTING CONTENT OF THE PAGE
         String groupsContent = "";
-        String groupsContentBodyTable = "<tbody>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"           <tr>\n" +
-"             <th></th>\n" +
-"             <td class=\"title\"><a href=\"\" data-rel=\"external\"></a></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"             <td></td>\n" +
-"           </tr>\n" +
-"         </tbody>\n" +
-"       </table>";
-        
+        String groupsContentBodyTableEnd = "</tbody>\n"
+                + "       </table>";
+        String groupsContentBodyTable = "<tbody>\n";
+
         //GETTING USER INFORMATION
-        //DBManager groupManager = new DBManager();
+        DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
+        User logged = (User) request.getSession().getAttribute("user");
+        LinkedList<Group> users = manager.getUserGroups(logged);
         
-        //User requesting = (User) request.getSession().getAttribute("user");
-        //groupManager.getUserGroups(requesting);
-        
+        for (int i = 0; i < users.size(); i++) {
+            Group groupConsidering = users.get(i);
+            //SETTING TABLE DEPENDING ON OWN PROPERTY
+            if (groupConsidering.getCreator() == logged.getId()) {
+                groupsContentBodyTable += "<tr>\n"
+                + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
+                + "             <td><a href=\"\" data-rel=\"external\"></a></td>\n"                     //News
+                + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"             //Latest Post
+                + "             <td></td>\n"                                                            //Modifica
+                + "             <td></td>\n"                                                            //Resoconto
+                + "           </tr>\n";
+            } else {
+                groupsContentBodyTable += "<tr>\n"
+                + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
+                + "             <td><a href=\"\" data-rel=\"external\"></a></td>\n"                     //News
+                + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"             //Latest Post
+                + "             <td></td>\n"                                        //Modifica
+                + "             <td></td>\n"                                        //Resoconto
+                + "           </tr>\n";
+            }
+        }
+
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */            
-            
-            groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable;
+            /* TODO output your page here. You may use following sample code. */
+
+            groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
             HTML.printPage(out, GROUPS_TITLE, groupsContent);
+
         }
     }
 

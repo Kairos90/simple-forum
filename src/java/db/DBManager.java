@@ -7,6 +7,7 @@ package db;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -155,6 +156,30 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return f;
+    }
+    
+    public Date getLatestPost(Group group) {
+        Date date = null;
+        
+        try {
+            String query = "SELECT MAX(post_date) FROM post HAVING group_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, group.getId());
+                ResultSet res = stm.executeQuery();
+                
+                try {
+                    date = res.getDate("post_date");
+                } finally {
+                    res.close();
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return date;
     }
 
 }

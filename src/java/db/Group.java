@@ -14,6 +14,7 @@ public class Group {
     private String name;
     private int id;
     private int creator;
+
     
     public Group(int id, String name, int creator) {
         this.name = name;
@@ -27,5 +28,9 @@ public class Group {
     
     public int getId() {
         return id;
+    }
+    
+    public int getCreator() {
+        return creator;
     }
 }
