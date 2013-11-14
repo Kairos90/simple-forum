@@ -28,12 +28,14 @@ public class HTML {
             + "<script type=\"text/javascript\" src=\"/static/jquery.mobile-1.3.2.min.js\"></script>"
             + "</head>"
             + "<body>"
+            + "<div data-role=\"page\">"
             + "<div data-role=\"header\">";
     private static final String POST_HEADER =
             "</div>"
             + "<div data-role=\"content\">";
     private static final String BOTTOM =
             "</div>"
+            + "</div>"
             + "</body>"
             + "</html>";
     
