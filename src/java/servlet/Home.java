@@ -6,9 +6,12 @@
 
 package servlet;
 
+import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +22,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Home extends HttpServlet {
     
-    //private static final String s;
+    private static final String CONTENT_HTML =
+            "<ul data-role=\"listview\" data-inset=\"true\">"
+            + "<li><a href=\"forum/groups\">My groups</a></li>"
+            + "<li><a href=\"forum/create\">Create group</a></li>"
+            + "<li><a href=\"forum/invites\">Invites</a></li>"
+            + "<li><a href=\"forum/logout\">Logout</a></li>"
+            + "</ul>";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,18 +42,29 @@ public class Home extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Home</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet Home at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        PrintWriter out = response.getWriter();
+        User user = (User) request.getSession().getAttribute("user");
+        Cookie[] cookies = request.getCookies();
+        Date loginTime = null;
+        for (Cookie cookie : cookies) {
+            if ("loginTime".equals(cookie.getName())) {
+                loginTime = new Date(Long.getLong(cookie.getValue()));
+                break;
+            }
         }
+        String welcomeMessage =
+                "<ul data-role=\"listview\" data-inset=\"true\">"
+                + "<li><h1>"
+                + "Welcome " + user.getName()
+                + "</h1>";
+        if(loginTime != null) {
+            welcomeMessage +=
+                    "<p>"
+                    + "You logged in " + loginTime.toString()
+                    + "</p>";
+        }
+        welcomeMessage += "</li></ul>";
+        HTML.printPage(out, "Forum home",  welcomeMessage + CONTENT_HTML);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

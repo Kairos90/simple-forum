@@ -28,11 +28,9 @@ public class HTML {
             + "<script type=\"text/javascript\" src=\"static/jquery.mobile-1.3.2.min.js\"></script>"
             + "</head>"
             + "<body>"
-            + "<div data-role=\"header\">"
-            + "<h1>";
+            + "<div data-role=\"header\">";
     private static final String POST_HEADER =
-            "</h1>"
-            + "</div>"
+            "</div>"
             + "<div data-role=\"content\">";
     private static final String BOTTOM =
             "</div>"
@@ -43,7 +41,22 @@ public class HTML {
         out.print(PRE_TITLE);
         out.print(title);
         out.print(POST_TITLE);
+        out.print("<h1>");
         out.print(title);
+        out.print("</h1>");
+        out.print(POST_HEADER);
+        out.print(content);
+        out.print(BOTTOM);
+    }
+    
+    public static void printPage(PrintWriter out, String title, String backUrl, String content) {
+        out.print(PRE_TITLE);
+        out.print(title);
+        out.print(POST_TITLE);
+        out.print("<a data-icon=\"back\" href=\""); out.print(backUrl); out.print("\">Back</a>"); 
+        out.print("<h1>");
+        out.print(title);
+        out.print("</h1>");
         out.print(POST_HEADER);
         out.print(content);
         out.print(BOTTOM);
