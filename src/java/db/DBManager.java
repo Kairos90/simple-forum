@@ -70,7 +70,7 @@ public class DBManager implements Serializable {
     public LinkedList<Group> getUserGroups(User u) {
         LinkedList<Group> g = new LinkedList<>();
         try {
-            String query = "SELECT * FROM user_group NATURAL JOIN group WHERE user_id = ?";
+            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, u.getId());

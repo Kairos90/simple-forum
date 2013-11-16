@@ -11,6 +11,7 @@ import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,26 +61,27 @@ public class Groups extends HttpServlet {
         //GETTING USER INFORMATION
         DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
         User logged = (User) request.getSession().getAttribute("user");
-        LinkedList<Group> users = manager.getUserGroups(logged);
+        LinkedList<Group> groupsOf = manager.getUserGroups(logged);
+        Iterator<Group> i = groupsOf.iterator();
         
-        for (int i = 0; i < users.size(); i++) {
-            Group groupConsidering = users.get(i);
+        while (i.hasNext()) {
+            Group groupConsidering = i.next();
             //SETTING TABLE DEPENDING ON OWN PROPERTY
             if (groupConsidering.getCreator() == logged.getId()) {
                 groupsContentBodyTable += "<tr>\n"
                 + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
                 + "             <td><a href=\"\" data-rel=\"external\"></a></td>\n"                     //News
                 + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"             //Latest Post
-                + "             <td></td>\n"                                                            //Modifica
-                + "             <td></td>\n"                                                            //Resoconto
+                + "             <td><a></a></td>\n"                                                            //Modifica
+                + "             <td><a></a></td>\n"                                                            //Resoconto
                 + "           </tr>\n";
             } else {
                 groupsContentBodyTable += "<tr>\n"
                 + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
                 + "             <td><a href=\"\" data-rel=\"external\"></a></td>\n"                     //News
                 + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"             //Latest Post
-                + "             <td></td>\n"                                        //Modifica
-                + "             <td></td>\n"                                        //Resoconto
+                + "             <td><a></a></td>\n"                                        //Modifica
+                + "             <td><a></a></td>\n"                                        //Resoconto
                 + "           </tr>\n";
             }
         }
