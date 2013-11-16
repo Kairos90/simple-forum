@@ -40,3 +40,5 @@ file_size INTEGER,
 PRIMARY KEY (post_id, file_name)
 );
 
+CREATE INDEX post_date_index ON NAN."post"(post_date)
+

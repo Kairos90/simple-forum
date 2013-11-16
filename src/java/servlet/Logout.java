@@ -6,29 +6,19 @@
 
 package servlet;
 
-import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author paolo
  */
-public class Home extends HttpServlet {
-    
-    private static final String CONTENT_HTML =
-            "<ul data-role=\"listview\" data-inset=\"true\">"
-            + "<li><a href=\"forum/groups\">My groups</a></li>"
-            + "<li><a href=\"forum/create\">Create group</a></li>"
-            + "<li><a href=\"forum/invites\">Invites</a></li>"
-            + "<li><a href=\"/logout\">Logout</a></li>"
-            + "</ul>";
+public class Logout extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,30 +31,9 @@ public class Home extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        User user = (User) request.getSession().getAttribute("user");
-        Cookie[] cookies = request.getCookies();
-        Date loginTime = null;
-        for (Cookie cookie : cookies) {
-            if ("loginTime".equals(cookie.getName())) {
-                loginTime = new Date(Long.parseLong(cookie.getValue()));
-                break;
-            }
-        }
-        String welcomeMessage =
-                "<ul data-role=\"listview\" data-inset=\"true\">"
-                + "<li><h1>"
-                + "Welcome " + user.getName()
-                + "</h1>";
-        if(loginTime != null) {
-            welcomeMessage +=
-                    "<p>"
-                    + "You logged in " + loginTime.toString()
-                    + "</p>";
-        }
-        welcomeMessage += "</li></ul>";
-        HTML.printPage(out, "Forum home",  welcomeMessage + CONTENT_HTML);
+        HttpSession session = request.getSession();
+        session.removeAttribute("user");
+        response.sendRedirect("/login");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -103,7 +72,7 @@ public class Home extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Home page";
+        return "Short description";
     }// </editor-fold>
 
 }
