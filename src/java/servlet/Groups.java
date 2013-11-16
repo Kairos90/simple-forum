@@ -72,7 +72,7 @@ public class Groups extends HttpServlet {
                 + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
                 + "             <td><a href=\"\" data-rel=\"external\"></a></td>\n"                     //News
                 + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"             //Latest Post
-                + "             <td><a></a></td>\n"                                                            //Modifica
+                + "             <td><a></a>ciao ciao</td>\n"                                                            //Modifica
                 + "             <td><a></a></td>\n"                                                            //Resoconto
                 + "           </tr>\n";
             } else {

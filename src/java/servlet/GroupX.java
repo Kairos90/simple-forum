@@ -6,6 +6,9 @@
 
 package servlet;
 
+import db.DBManager;
+import db.Group;
+import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -17,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Pier DAgostino
  */
-public class Group extends HttpServlet {
+public class GroupX extends HttpServlet {
 
     private final String TITLE = "Group";
     private String content = "";
@@ -37,6 +40,12 @@ public class Group extends HttpServlet {
             
             String contentHead = "";
             String contentBody = "";
+            
+            DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
+            User logged = (User) request.getAttribute("user");
+            Group considering = (Group) request.getAttribute("group");
+            
+            if(logged.getId() == considering.getCreator())
             
             HTML.printPage(out, TITLE, content);
         }
