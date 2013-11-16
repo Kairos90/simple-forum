@@ -36,13 +36,12 @@
         <servlet-class>servlet.Groups</servlet-class>
     </servlet>
     <servlet>
-<<<<<<< HEAD
         <servlet-name>GroupX</servlet-name>
         <servlet-class>servlet.GroupX</servlet-class>
-=======
+    </servlet>
+    <servlet>
         <servlet-name>Logout</servlet-name>
         <servlet-class>servlet.Logout</servlet-class>
->>>>>>> 3e9732ffeb99aac339f4a10d747035cf4c147a96
     </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
@@ -57,13 +56,12 @@
         <url-pattern>/forum/groups</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-<<<<<<< HEAD
         <servlet-name>GroupX</servlet-name>
         <url-pattern>/GroupX</url-pattern>
-=======
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>Logout</servlet-name>
         <url-pattern>/logout</url-pattern>
->>>>>>> 3e9732ffeb99aac339f4a10d747035cf4c147a96
     </servlet-mapping>
     <session-config>
         <session-timeout>
