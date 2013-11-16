@@ -35,6 +35,10 @@
         <servlet-name>Groups</servlet-name>
         <servlet-class>servlet.Groups</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GroupX</servlet-name>
+        <servlet-class>servlet.GroupX</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/forum</url-pattern>
@@ -46,6 +50,10 @@
     <servlet-mapping>
         <servlet-name>Groups</servlet-name>
         <url-pattern>/forum/groups</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GroupX</servlet-name>
+        <url-pattern>/GroupX</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
