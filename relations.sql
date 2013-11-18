@@ -19,10 +19,10 @@ post_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT B
 user_id INTEGER,
 group_id INTEGER,
 post_text VARCHAR(32672),
-post_date TIMESTAMP,
-PRIMARY KEY (post_id),
-INDEX (post_date)
+post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (post_id)
 );
+CREATE INDEX post_date_index ON "post"(post_date);
 
 CREATE TABLE "user_group" (
 user_id INTEGER,

@@ -100,7 +100,7 @@ public class DBManager implements Serializable {
     public LinkedList<Post> getGroupPosts(Group g) {
         LinkedList<Post> p = new LinkedList<>();
         try {
-            String query = "SELECT * FROM post NATURAL JOIN \"user\" WHERE group_id = ?";
+            String query = "SELECT * FROM \"post\" NATURAL JOIN \"user\" WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, g.getId());
@@ -169,6 +169,7 @@ public class DBManager implements Serializable {
                 ResultSet res = stm.executeQuery();
                 
                 try {
+                    res.next();
                     date = res.getDate("post_date");
                 } finally {
                     res.close();
@@ -180,6 +181,36 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return date;
+    }
+    
+    public Group getGroup(int groupId) {
+        Group target = null;
+        
+        try {
+            String query = "SELECT * FROM \"group\" WHERE group_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, groupId);
+                ResultSet res = stm.executeQuery();
+                
+                try {
+                    res.next();
+                    target = new Group(
+                        res.getInt("group_id"),
+                        res.getString("group_name"), 
+                        res.getInt("creator_id")
+                    );
+                } finally {
+                    res.close();
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return target;
     }
 
 }

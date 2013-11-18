@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package servlet;
 
 import db.DBManager;
 import db.Group;
+import db.Post;
 import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 public class GroupX extends HttpServlet {
 
     private final String TITLE = "Group";
-    private String content = "";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,21 +39,28 @@ public class GroupX extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            
-            String contentBodyEnd = "";
-            String contentBody = "";
-            
+
+            String content = "";
+
             DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
-            User logged = (User) request.getAttribute("user");
-            Group considering = (Group) request.getAttribute("group");
-            
-            if(logged.getId() == considering.getCreator()) {
-                
-            } else {
-                
+            User logged = (User) request.getSession().getAttribute("user");
+            int groupId = Integer.parseInt(request.getParameter("id"));
+            Group currentGroup = manager.getGroup(groupId);
+            LinkedList<Post> postOf = manager.getGroupPosts(currentGroup);
+            Iterator<Post> i = postOf.iterator();
+
+            while (i.hasNext()) {
+                Post current = i.next();
+                content += "<div class=\"ui-grid-a ui-responsive\">\n"
+                        + "            <div class=\"ui-block-a\">\n"
+                        + current.getCreator().getName() + "\n"
+                        + "            </div>\n"
+                        + "            <div class=\"ui-block-b\">\n"
+                        + current.getText() + "\n"
+                        + "            </div>\n"
+                        + "        </div>";
             }
-    
-            content = "";
+
             HTML.printPage(out, TITLE, content);
         }
     }
