@@ -70,15 +70,15 @@ public class Groups extends HttpServlet {
             if (groupConsidering.getCreator() == logged.getId()) {
                 groupsContentBodyTable += "<tr>\n"
                 + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
-                + "             <td><a href=\"\" data-rel=\"external\"></a></td>\n"                     //News
+                + "             <td></td>\n"                     //News
                 + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"             //Latest Post
-                + "             <td><a></a>ciao ciao</td>\n"                                                            //Modifica
+                + "             <td><a>ciao ciao</a></td>\n"                                                            //Modifica
                 + "             <td><a></a></td>\n"                                                            //Resoconto
                 + "           </tr>\n";
             } else {
                 groupsContentBodyTable += "<tr>\n"
                 + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
-                + "             <td><a href=\"\" data-rel=\"external\"></a></td>\n"                     //News
+                + "             <td>jadjsdvjksnkjv</td>\n"                     //News
                 + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"             //Latest Post
                 + "             <td><a></a></td>\n"                                        //Modifica
                 + "             <td><a></a></td>\n"                                        //Resoconto

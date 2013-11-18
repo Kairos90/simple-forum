@@ -81,7 +81,7 @@ public class DBManager implements Serializable {
                                 new Group(
                                     res.getInt("group_id"),
                                     res.getString("group_name"), 
-                                    res.getInt("user_id")
+                                    res.getInt("creator_id")
                                 )
                         );
                     }

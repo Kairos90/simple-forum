@@ -9,7 +9,7 @@ UNIQUE (user_name)
 CREATE TABLE "group" (
 group_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 group_name VARCHAR(50),
-user_id INTEGER,
+creator_id INTEGER,
 PRIMARY KEY (group_id),
 UNIQUE (group_name)
 );
