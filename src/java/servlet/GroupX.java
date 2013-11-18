@@ -38,15 +38,20 @@ public class GroupX extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             
-            String contentHead = "";
+            String contentBodyEnd = "";
             String contentBody = "";
             
             DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
             User logged = (User) request.getAttribute("user");
             Group considering = (Group) request.getAttribute("group");
             
-            if(logged.getId() == considering.getCreator())
-            
+            if(logged.getId() == considering.getCreator()) {
+                
+            } else {
+                
+            }
+    
+            content = "";
             HTML.printPage(out, TITLE, content);
         }
     }
