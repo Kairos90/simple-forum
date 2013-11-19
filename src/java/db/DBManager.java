@@ -162,7 +162,7 @@ public class DBManager implements Serializable {
         Date date = null;
         
         try {
-            String query = "SELECT MAX(post_date) FROM \"post\" HAVING group_id = ?";
+            String query = "SELECT MAX(post_date) FROM \"post\" WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, group.getId());
