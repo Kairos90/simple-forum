@@ -64,4 +64,8 @@ public class HTML {
         out.print(BOTTOM);
     }
     
+    public static void print404(PrintWriter out) {
+        printPage(out, "404", "<h2>Error 404: page not found</h2>");
+    } 
+    
 }

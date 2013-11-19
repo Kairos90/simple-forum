@@ -36,8 +36,8 @@
         <servlet-class>servlet.Groups</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>GroupX</servlet-name>
-        <servlet-class>servlet.GroupX</servlet-class>
+        <servlet-name>GroupPage</servlet-name>
+        <servlet-class>servlet.GroupPage</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Logout</servlet-name>
@@ -56,8 +56,8 @@
         <url-pattern>/forum/groups</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>GroupX</servlet-name>
-        <url-pattern>/forum/groupx</url-pattern>
+        <servlet-name>GroupPage</servlet-name>
+        <url-pattern>/forum/group</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Logout</servlet-name>

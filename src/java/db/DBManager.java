@@ -131,7 +131,7 @@ public class DBManager implements Serializable {
     public LinkedList<File> getPostFiles(Post p) {
         LinkedList<File> f = new LinkedList<>();
         try {
-            String query = "SELECT * FROM file NATURAL JOIN post WHERE post_id = ?";
+            String query = "SELECT * FROM \"file\" NATURAL JOIN \"post\" WHERE post_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, p.getId());
@@ -162,7 +162,7 @@ public class DBManager implements Serializable {
         Date date = null;
         
         try {
-            String query = "SELECT MAX(post_date) FROM post HAVING group_id = ?";
+            String query = "SELECT MAX(post_date) FROM \"post\" HAVING group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, group.getId());

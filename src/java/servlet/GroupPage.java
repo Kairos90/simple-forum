@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Pier DAgostino
  */
-public class GroupX extends HttpServlet {
+public class GroupPage extends HttpServlet {
 
     private final String TITLE = "Group";
 
@@ -39,29 +39,32 @@ public class GroupX extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-
-            String content = "";
-
             DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
             User logged = (User) request.getSession().getAttribute("user");
-            int groupId = Integer.parseInt(request.getParameter("id"));
-            Group currentGroup = manager.getGroup(groupId);
-            LinkedList<Post> postOf = manager.getGroupPosts(currentGroup);
-            Iterator<Post> i = postOf.iterator();
+            String id = request.getParameter("id");
+            if (id == null) {
+                HTML.print404(out);
+            } else {
+                String content = "";
+                int groupId = Integer.parseInt(id);
+                Group currentGroup = manager.getGroup(groupId);
+                LinkedList<Post> postOf = manager.getGroupPosts(currentGroup);
+                Iterator<Post> i = postOf.iterator();
 
-            while (i.hasNext()) {
-                Post current = i.next();
-                content += "<div class=\"ui-grid-a ui-responsive\">\n"
-                        + "            <div class=\"ui-block-a\">\n"
-                        + current.getCreator().getName() + "\n"
-                        + "            </div>\n"
-                        + "            <div class=\"ui-block-b\">\n"
-                        + current.getText() + "\n"
-                        + "            </div>\n"
-                        + "        </div>";
+                while (i.hasNext()) {
+                    Post current = i.next();
+                    content += "<div class=\"ui-grid-a ui-responsive\">\n"
+                            + "            <div class=\"ui-block-a\">\n"
+                            + current.getCreator().getName() + "\n"
+                            + "            </div>\n"
+                            + "            <div class=\"ui-block-b\">\n"
+                            + current.getText() + "\n"
+                            + "            </div>\n"
+                            + "        </div>";
+                }
+
+                HTML.printPage(out, TITLE, content);
             }
-
-            HTML.printPage(out, TITLE, content);
         }
     }
 
