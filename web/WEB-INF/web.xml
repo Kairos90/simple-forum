@@ -43,10 +43,6 @@
         <servlet-name>Logout</servlet-name>
         <servlet-class>servlet.Logout</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>GroupManager</servlet-name>
-        <servlet-class>servlet.GroupManager</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/forum</url-pattern>
@@ -66,10 +62,6 @@
     <servlet-mapping>
         <servlet-name>Logout</servlet-name>
         <url-pattern>/logout</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GroupManager</servlet-name>
-        <url-pattern>/forum/group-manager</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
