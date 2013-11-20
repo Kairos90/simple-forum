@@ -212,5 +212,35 @@ public class DBManager implements Serializable {
         
         return target;
     }
+    
+      public LinkedList<Group> showInvites(User user) {
+        LinkedList<Group> u = new LinkedList<>();
+        try {
+            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND group_accepted = 0";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, user.getId());
+                ResultSet res = stm.executeQuery();
+                try {
+                    while (res.next()) {
+                        u.add(
+                                new Group(
+                                        res.getInt("group_id"), 
+                                        null,
+                                        0
+                                )
+                        );
+                    }
+                } finally {
+                    res.close();
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return u;
+    }
 
 }
