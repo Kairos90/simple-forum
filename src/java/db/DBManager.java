@@ -162,7 +162,7 @@ public class DBManager implements Serializable {
         Date date = null;
         
         try {
-            String query = "SELECT MAX(post_date) FROM \"post\" WHERE group_id = ?";
+            String query = "SELECT MAX(post_date) AS max_date FROM \"post\" WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, group.getId());
@@ -170,7 +170,7 @@ public class DBManager implements Serializable {
                 
                 try {
                     res.next();
-                    date = res.getDate("post_date");
+                    date = res.getDate("max_date");
                 } finally {
                     res.close();
                 }
