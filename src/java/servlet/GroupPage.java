@@ -57,9 +57,8 @@ public class GroupPage extends HttpServlet {
                             + "            <div class=\"ui-block-a\">\n"
                             + "              <div class=\"ui-grid-b ui-responsive\">\n"
                             + "                <div class=\"ui-block-a\">\n"
-                            + "                  <img>\n"
-                            + "                   <link href=\"C:\\Users\\Pier D'Agostino\\Documents\\GitHub\\simple-forum\\web\\static\\avatars\\tryingavatar.jpg\">\n"
-                            + "                  </img>\n"
+                            // QUI CI ANDRA' IL TAG APPROPRIATO PER STAMPARE L'AVATAR
+                            + "                 <img href=\"\">\n"
                             + "                </div>\n"
                             + "                <div class=\"ui-block-a\">\n"
                             + current.getCreator().getName() + "\n"
