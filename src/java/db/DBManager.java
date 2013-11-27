@@ -242,5 +242,38 @@ public class DBManager implements Serializable {
         }
         return u;
     }
+      
+      
+      
+      public LinkedList<UserGroup> showUsersForGroup(User user) {
+        LinkedList<UserGroup> u = new LinkedList<>();
+        try {
+            String query = "SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, user.getId());
+                ResultSet res = stm.executeQuery();
+                try {
+                    while (res.next()) {
+                        u.add(
+                                new UserGroup(
+                                        res.getInt("user_id"), 
+                                        res.getInt("group_id"),
+                                        res.getBoolean("group_accepted"),
+                                        res.getBoolean("visible")
+                                )
+                        );
+                    }
+                } finally {
+                    res.close();
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return u;
+    }
 
 }

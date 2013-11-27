@@ -73,7 +73,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GroupManager</servlet-name>
-        <url-pattern>/forum/group-manager</url-pattern>
+        <url-pattern>/forum/create</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AvatarUploadPage</servlet-name>

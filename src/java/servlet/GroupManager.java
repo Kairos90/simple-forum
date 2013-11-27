@@ -33,10 +33,29 @@ public class GroupManager extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
+     // TITLE OF GROUPS PAGE & CONTENT OF GROUPS PAGE
+    private static final String GROUP_MANAGER_TITLE = "My Group";
+    private static final String GROUPS_CONTENT_HEAD_TABLE = "<table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
+            + "         <thead>\n"
+            + "           <tr class=\"ui-bar-d\">\n"
+            + "             <th>Name</th>\n"
+            + "             <th>Accepted</th>\n"
+            + "           </tr>\n"
+            + "         </thead>\n";
+    
+    
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
+        //Setting Content Page
+        String groupsContent = "";
+         String groupsContentBodyTableEnd = "</tbody>\n"
+                + "       </table>";
+        String groupsContentBodyTable = "<tbody>\n";
+
         //GETTING USER INFORMATION
         DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
         User logged = (User) request.getSession().getAttribute("user");
@@ -49,17 +68,12 @@ public class GroupManager extends HttpServlet {
         
         
         
-        try (PrintWriter out = response.getWriter()) {
+       try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet GroupManager</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet GroupManager at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+
+            groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
+            HTML.printPage(out, GROUP_MANAGER_TITLE, "/forum", groupsContent);
+
         }
     }
 
