@@ -226,8 +226,8 @@ public class DBManager implements Serializable {
                         u.add(
                                 new Group(
                                         res.getInt("group_id"), 
-                                        null,
-                                        0
+                                        res.getString("group_name"),
+                                        res.getInt("creator_id")
                                 )
                         );
                     }
