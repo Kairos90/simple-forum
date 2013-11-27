@@ -74,7 +74,7 @@ public class AvatarUploadPage extends HttpServlet {
                 try {
                     MultipartRequest multipart = new MultipartRequest(request, avatarDirName, 1024 * 1024, avatarRenamePolicy);
                 } catch(IOException ex) {
-                    
+                    this.getServletContext().log(ex,"error reading or saving file!");
                 }
                 
                 
