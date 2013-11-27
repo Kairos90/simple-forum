@@ -34,8 +34,8 @@ public class Groups extends HttpServlet {
             + "             <th>Group Name</th>\n"
             + "             <th>News</th>\n"
             + "             <th>Latest Post</th>\n"
-            + "             <th><abbr title=\"Rotten Tomato Rating\">Modifica</abbr></th>\n"
-            + "             <th>Resoconto</th>\n"
+            + "             <th><abbr title=\"Rotten Tomato Rating\">Modify</abbr></th>\n"
+            + "             <th>Summerize</th>\n"
             + "           </tr>\n"
             + "         </thead>\n";
 
@@ -69,19 +69,19 @@ public class Groups extends HttpServlet {
             //SETTING TABLE DEPENDING ON OWN PROPERTY
             if (groupConsidering.getCreator() == logged.getId()) {
                 groupsContentBodyTable += "<tr>\n"
-                + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
+                + "             <th><a href=\"/forum/group?id=" + groupConsidering.getId() + "\">" + groupConsidering.getName() + "</a></th>\n"                          //Group Name
                 + "             <td></td>\n"                     //News
-                + "             <td><a href=\"/forum/group?id=" + groupConsidering.getId() + "\">" + manager.getLatestPost(groupConsidering) + "</a></td>\n"             //Latest Post
-                + "             <td><a>ciao ciao</a></td>\n"                                                            //Modifica
-                + "             <td><a></a></td>\n"                                                            //Resoconto
+                + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"             //Latest Post
+                + "             <td></td>\n"                                                            //Modifica
+                + "             <td></td>\n"                                                            //Resoconto
                 + "           </tr>\n";
             } else {
                 groupsContentBodyTable += "<tr>\n"
                 + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
                 + "             <td>jadjsdvjksnkjv</td>\n"                     //News
                 + "             <td><a href=\"/forum/group?id=" + groupConsidering.getId() + "\">" + manager.getLatestPost(groupConsidering) + "</a></td>\n"             //Latest Post
-                + "             <td><a></a></td>\n"                                        //Modifica
-                + "             <td><a></a></td>\n"                                        //Resoconto
+                + "             <td></td>\n"                                        //Modifica
+                + "             <td></td>\n"                                        //Resoconto
                 + "           </tr>\n";
             }
         }
@@ -90,7 +90,7 @@ public class Groups extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
 
             groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
-            HTML.printPage(out, GROUPS_TITLE, groupsContent);
+            HTML.printPage(out, GROUPS_TITLE, "/forum", groupsContent);
 
         }
     }

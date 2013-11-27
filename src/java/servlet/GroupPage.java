@@ -57,23 +57,21 @@ public class GroupPage extends HttpServlet {
                 while (i.hasNext()) {
                     Post current = i.next();
                     content += "<div class=\"ui-grid-a ui-responsive\">\n"
-                            + "            <div class=\"ui-block-a\">\n"
-                            + "              <div class=\"ui-grid-b ui-responsive\">\n"
-                            + "                <div class=\"ui-block-a\">\n"
-                            + "                 <img href=\"" + current.getCreator().getAvatar(request) + "\">\n"
-                            + "                </div>\n"
-                            + "                <div class=\"ui-block-a\">\n"
+                            + "            <div class=\"ui-block-a\" style=\"width: 20%\">\n"
+                            + "              <div>\n"
+                            + "                 <img style=\"max-width: 100%; height: auto\" src=\"" + current.getCreator().getAvatar(request) + "\">\n"
+                            + "              </div>\n"
+                            + "              <p>\n"
                             + current.getCreator().getName() + "\n"
-                            + "                </div>\n"
-                            + "               </div>"
+                            + "              </p>\n"
                             + "            </div>\n"
-                            + "            <div class=\"ui-block-b\">\n"
+                            + "            <div class=\"ui-block-b\" style=\"width: 80%\">\n"
                             + current.getText() + "\n"
                             + "            </div>\n"
                             + "        </div>";
                 }
 
-                HTML.printPage(out, TITLE, content);
+                HTML.printPage(out, TITLE, "/forum/groups", content);
             }
         }
     }
