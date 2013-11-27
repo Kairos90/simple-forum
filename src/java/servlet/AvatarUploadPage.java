@@ -6,30 +6,21 @@
 
 package servlet;
 
-import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author paolo
+ * @author Pier DAgostino
  */
-public class Home extends HttpServlet {
+public class AvatarUploadPage extends HttpServlet {
     
-    private static final String CONTENT_HTML =
-            "<ul data-role=\"listview\" data-inset=\"true\">"
-            + "<li><a href=\"forum/groups\">My groups</a></li>"
-            + "<li><a href=\"forum/create\">Create group</a></li>"
-            + "<li><a href=\"forum/invites\">Invites</a></li>"
-            + "<li><a href=\"forum/avatar-upload-page\">Avatar Setting</a></li>"
-            + "<li><a href=\"/logout\" data-ajax=\"false\">Logout</a></li>"
-            + "</ul>";
+    private final String TITLE = "AVATAR'S SETTING PAGE";
+    private String content = "";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,29 +34,11 @@ public class Home extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        User user = (User) request.getSession().getAttribute("user");
-        Cookie[] cookies = request.getCookies();
-        Date loginTime = null;
-        for (Cookie cookie : cookies) {
-            if ("loginTime".equals(cookie.getName())) {
-                loginTime = new Date(Long.parseLong(cookie.getValue()));
-                break;
-            }
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            
+            HTML.printPage(out, TITLE, "/forum", content);
         }
-        String welcomeMessage =
-                "<ul data-role=\"listview\" data-inset=\"true\">"
-                + "<li><h1>"
-                + "Welcome " + user.getName()
-                + "</h1>";
-        if(loginTime != null) {
-            welcomeMessage +=
-                    "<p>"
-                    + "You logged in " + loginTime.toString()
-                    + "</p>";
-        }
-        welcomeMessage += "</li></ul>";
-        HTML.printPage(out, "Forum home",  welcomeMessage + CONTENT_HTML);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -104,7 +77,7 @@ public class Home extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Home page";
+        return "Short description";
     }// </editor-fold>
 
 }

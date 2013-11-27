@@ -47,6 +47,18 @@
         <servlet-name>GroupManager</servlet-name>
         <servlet-class>servlet.GroupManager</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AvatarUploadPage</servlet-name>
+        <servlet-class>servlet.AvatarUploadPage</servlet-class>
+        <init-param>
+            <param-name>
+                avatarDir
+            </param-name>
+            <param-value>
+                ../static/avatars
+            </param-value>
+        </init-param>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/forum</url-pattern>
@@ -70,6 +82,10 @@
     <servlet-mapping>
         <servlet-name>GroupManager</servlet-name>
         <url-pattern>/forum/group-manager</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AvatarUploadPage</servlet-name>
+        <url-pattern>/forum/avatar-upload-page</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
