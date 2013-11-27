@@ -17,6 +17,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.oreilly.servlet.*;
+import com.oreilly.servlet.multipart.FileRenamePolicy;
+import java.io.File;
 
 /**
  *
@@ -57,8 +60,7 @@ public class GroupPage extends HttpServlet {
                             + "            <div class=\"ui-block-a\">\n"
                             + "              <div class=\"ui-grid-b ui-responsive\">\n"
                             + "                <div class=\"ui-block-a\">\n"
-                            // QUI CI ANDRA' IL TAG APPROPRIATO PER STAMPARE L'AVATAR
-                            + "                 <img href=\"\">\n"
+                            + "                 <img href=\"" + current.getCreator().getAvatar(request) + "\">\n"
                             + "                </div>\n"
                             + "                <div class=\"ui-block-a\">\n"
                             + current.getCreator().getName() + "\n"

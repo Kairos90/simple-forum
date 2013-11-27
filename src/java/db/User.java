@@ -7,7 +7,12 @@
 package db;
 
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.LinkedList;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 
 /**
  *
@@ -31,4 +36,12 @@ public class User implements Serializable{
         return name;
     }
     
+    public String getAvatar(HttpServletRequest request) {
+        File f = new File(request.getServletPath() + "/static/avatars/" + id + ".jpg");
+        if(f.exists()) {
+            return "/static/avatars/" + id + ".jpg";
+        } else {
+            return "/static/avatars/0.jpg";
+        }
+    }
 }
