@@ -357,5 +357,22 @@ public class DBManager implements Serializable {
         }
         return u;
     }
-      
+ 
+        public void changeGroupName(Group u, String name) {
+        try {
+            String query = "UPDATE \"group\" SET group_name = ? WHERE group_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setString(1,name);
+                stm.setInt(2,u.getId());
+                stm.executeQuery();
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+       
+       
 }

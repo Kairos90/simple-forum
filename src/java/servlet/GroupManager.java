@@ -49,7 +49,23 @@ public class GroupManager extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+       
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+         response.setContentType("text/html;charset=UTF-8");
         
         //SETTING USER TABLE
         String userContent = "";
@@ -75,7 +91,7 @@ public class GroupManager extends HttpServlet {
             titleString = "Edit Name";
             nameString = groupToEdit.getName();
         }
-              String groupTableContent = "<form method=\"POST\">"
+              String groupTableContent = "<form action=\"/forum/create\" data-ajax=\"false\" method=\"POST\">"
               + "   <table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
               + "         <thead>\n"
               + "           <tr class=\"ui-bar-d\">\n"
@@ -85,7 +101,7 @@ public class GroupManager extends HttpServlet {
               + "         <tbody>\n"
               + "             <tr>\n"
               // per qualche ragione il placeholder non prende le parole dopo il primo spazio
-              + "                 <td> <input type=\"text\" placeholder =" + nameString + "> </td>\n"
+              + "                 <td> <input name=\"change_group_name\" type=\"text\" placeholder =" + nameString + "> </td>\n"
               + "             </tr>\n"
               + "        </tbody>\n"
               + "</table>";
@@ -99,8 +115,8 @@ public class GroupManager extends HttpServlet {
              User userConsidered = i.next();
                userContentBodyTable += "<tr>\n"
                 + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
-                + "             <td> <input type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
-                + "             <td> <input type=\"checkbox\" checked=\"checked\"> </td>\n"      //Visible
+                + "             <td> <input name=\""+userConsidered.getId()+"member\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
+                + "             <td> <input name=\""+userConsidered.getId()+"visible\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Visible
                 + "           </tr>\n";
          }
          
@@ -111,20 +127,20 @@ public class GroupManager extends HttpServlet {
              User userConsidered = s.next();             
                userContentBodyTable += "<tr>\n"
                 + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
-                + "             <td> <input type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
-                + "             <td> <input type=\"checkbox\"> </td>\n"    //Visible
+                + "             <td> <input name=\""+userConsidered.getId()+"member\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
+                + "             <td> <input name=\""+userConsidered.getId()+"visible\" type=\"checkbox\"> </td>\n"    //Visible
                 + "           </tr>\n";
          }
          
-         //ALL THE OTHER USERS
+        //SHOW ALL THE OTHER USERS
         LinkedList<User> otherUsers = manager.getUsersNotInGroup(logged);
         Iterator<User> o = otherUsers.iterator();
          while (o.hasNext()) {
              User userConsidered = o.next();             
                userContentBodyTable += "<tr>\n"
                 + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
-                + "             <td> <input type=\"checkbox\"> </td>\n"    //Group Member 
-                + "             <td> <input type=\"checkbox\"> </td>\n"    //Visible
+                + "             <td> <input name=\""+userConsidered.getId()+"member\" type=\"checkbox\"> </td>\n"    //Group Member 
+                + "             <td> <input name=\""+userConsidered.getId()+"visible\" type=\"checkbox\"> </td>\n"    //Visible
                 + "           </tr>\n";
          }
         
@@ -137,21 +153,7 @@ public class GroupManager extends HttpServlet {
             HTML.printPage(out, GROUP_MANAGER_TITLE, "/forum", userContent);
 
         }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
 
     /**
@@ -166,6 +168,21 @@ public class GroupManager extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+        DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
+        User logged = (User) request.getSession().getAttribute("user");
+        Group groupToEdit = manager.getGroupMadeByUser(logged);
+
+        String newName = request.getParameter("change_group_name");
+        System.out.println(newName);
+        manager.changeGroupName(groupToEdit, newName);
+        
+        
+        try (PrintWriter out = response.getWriter()) {
+            String userContent = newName + "ciao";
+            HTML.printPage(out, GROUP_MANAGER_TITLE, "/forum", userContent);
+
+        }
+        
     }
 
     /**
