@@ -57,7 +57,9 @@ public class GroupManager extends HttpServlet {
          String userContentBodyTable =  "<tbody>\n";
         
          String userContentBodyTableEnd = "</tbody>\n"
-                + "       </table>\n";
+                + "       </table>\n"
+                + "   <input type=\"submit\" value=\"submit\">"
+                + "</form>";
        
 
         //GETTING USER INFORMATION
@@ -73,7 +75,8 @@ public class GroupManager extends HttpServlet {
             titleString = "Edit Name";
             nameString = groupToEdit.getName();
         }
-              String groupTableContent = "<table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
+              String groupTableContent = "<form method=\"POST\">"
+              + "   <table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
               + "         <thead>\n"
               + "           <tr class=\"ui-bar-d\">\n"
               + "             <th>"+ titleString +"</th>\n"
@@ -82,7 +85,7 @@ public class GroupManager extends HttpServlet {
               + "         <tbody>\n"
               + "             <tr>\n"
               // per qualche ragione il placeholder non prende le parole dopo il primo spazio
-              + "                 <th> <input type=\"text\" placeholder =" + nameString + "> </th>\n"
+              + "                 <td> <input type=\"text\" placeholder =" + nameString + "> </td>\n"
               + "             </tr>\n"
               + "        </tbody>\n"
               + "</table>";
@@ -90,17 +93,38 @@ public class GroupManager extends HttpServlet {
         
         
         //SHOW USERS FOLLOWING THE GROUP AND VISIBLE 
-        LinkedList<User> Invites = manager.getUsersForGroupAndVisible(logged);
-        Iterator<User> i = Invites.iterator();
+        LinkedList<User> visibleFollowinUsers = manager.getUsersForGroupAndVisible(logged);
+        Iterator<User> i = visibleFollowinUsers.iterator();
          while (i.hasNext()) {
              User userConsidered = i.next();
-             System.out.println(userConsidered.getName());
-             
-             
                userContentBodyTable += "<tr>\n"
-                + "             <th>" + userConsidered.getName() + "</th>\n"                                                  //User Name
-                + "             <td> </td>\n"      //Group Member 
-                + "             <td> </td>\n"       //Visible
+                + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
+                + "             <td> <input type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
+                + "             <td> <input type=\"checkbox\" checked=\"checked\"> </td>\n"      //Visible
+                + "           </tr>\n";
+         }
+         
+         //SHOW USERS FOLLOWING THE GROUP BUT NOT VISIBLE 
+        LinkedList<User> notVisibleFollowinUsers = manager.getUsersForGroupAndNotVisible(logged);
+        Iterator<User> s = notVisibleFollowinUsers.iterator();
+         while (s.hasNext()) {
+             User userConsidered = s.next();             
+               userContentBodyTable += "<tr>\n"
+                + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
+                + "             <td> <input type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
+                + "             <td> <input type=\"checkbox\"> </td>\n"    //Visible
+                + "           </tr>\n";
+         }
+         
+         //ALL THE OTHER USERS
+        LinkedList<User> otherUsers = manager.getUsersNotInGroup(logged);
+        Iterator<User> o = otherUsers.iterator();
+         while (o.hasNext()) {
+             User userConsidered = o.next();             
+               userContentBodyTable += "<tr>\n"
+                + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
+                + "             <td> <input type=\"checkbox\"> </td>\n"    //Group Member 
+                + "             <td> <input type=\"checkbox\"> </td>\n"    //Visible
                 + "           </tr>\n";
          }
         
