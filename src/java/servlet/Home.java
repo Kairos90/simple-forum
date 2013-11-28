@@ -27,7 +27,7 @@ public class Home extends HttpServlet {
             + "<li><a href=\"forum/groups\">My groups</a></li>"
             + "<li><a href=\"forum/create\">Create group</a></li>"
             + "<li><a href=\"forum/invites\">Invites</a></li>"
-            + "<li><a href=\"forum/avatar-upload-page\">Avatar Setting</a></li>"
+            + "<li><a href=\"forum/avatar\">Avatar Upload</a></li>"
             + "<li><a href=\"/logout\" data-ajax=\"false\">Logout</a></li>"
             + "</ul>";
 

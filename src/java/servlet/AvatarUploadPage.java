@@ -10,7 +10,11 @@ import com.oreilly.servlet.multipart.FileRenamePolicy;
 import db.DBManager;
 import db.User;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -29,7 +34,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class AvatarUploadPage extends HttpServlet {
 
-    private final String TITLE = "AVATAR'S SETTING PAGE";
+    private final String TITLE = "Choose your avatar";
+    private final String form = "<form data-ajax=\"false\" enctype=\"multipart/form-data\" method=\"post\" action=\"/forum/avatar\">\n"
+            + "					<ul data-role=\"listview\" data-inset=\"true\">\n"
+            + "						<li data-role=\"fieldcontain\">\n"
+            + "							<label for=\"photo\">Upload your avatar:</label>\n"
+            + "							<input type=\"file\" id=\"photo\" name=\"avatar\">\n"
+            + "						</li>\n"
+            + "					</ul>\n"
+            + "					<button type=\"submit\" data-inline=\"true\">Upload</button>	\n"
+            + "				</form>\n";
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -43,7 +57,13 @@ public class AvatarUploadPage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+
+            HTML.printPage(out, TITLE, "/forum", form);
+        } catch (IOException ex) {
+            getServletContext().log(ex, "error reading file");
+        }
     }
 
     /**
@@ -62,26 +82,46 @@ public class AvatarUploadPage extends HttpServlet {
             // SETTING NEEDED ITEMS
             DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
             User logged = (User) request.getSession().getAttribute("user");
-            int id = logged.getId();
-            System.out.println(id + "");
-            if (id == 0) {
-                HTML.print404(out);
-            } else {
-                String content = "";
-                String avatarDirName = request.getServletContext().getRealPath("/").replace("\\","/") + "static/avatars";
-                // UPLOADING PROCEDURE
-                RenameFile avatarRenamePolicy = new RenameFile(request, id);
-                try {
-                    MultipartRequest multipart = new MultipartRequest(request, avatarDirName, 1024 * 1024, avatarRenamePolicy);
-                } catch(IOException ex) {
-                    this.getServletContext().log(ex,"error reading or saving file!");
-                }
-                
-                
-                
-                
-                
-                HTML.printPage(out, TITLE, "/forum", content);
+            int loggedUserId = logged.getId();
+            String content = form;
+            String avatarDirName = request.getServletContext().getRealPath("/static/avatars");
+            // UPLOADING PROCEDURE
+            try {
+                handleUpload(request, "avatar", avatarDirName + File.separator + loggedUserId + ".jpg");
+                content = "<h2>Avatar upload success</h2>" + form;
+            } catch (Exception ex) {
+                content = "<h2>An error occurred during the upload</h2>" + form;
+                this.getServletContext().log(ex, "error saving file!");
+            }
+            HTML.printPage(out, TITLE, "/forum", content);
+        }
+    }
+    
+    public void handleUpload(HttpServletRequest request, String paramName, String newFilePathWithName) throws IOException, ServletException {
+        final Part filePart = request.getPart(paramName);
+
+        OutputStream out = null;
+        InputStream filecontent = null;
+
+        try {
+            out = new FileOutputStream(new File(newFilePathWithName));
+            filecontent = filePart.getInputStream();
+
+            int read;
+            final byte[] bytes = new byte[1024];
+
+            while ((read = filecontent.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            this.getServletContext().log("File{0}being uploaded to {1}");
+        } catch (FileNotFoundException fne) {
+            this.getServletContext().log(fne, "Problems during file upload. Error: {0}");
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (filecontent != null) {
+                filecontent.close();
             }
         }
     }
@@ -98,10 +138,10 @@ public class AvatarUploadPage extends HttpServlet {
 }
 
 class RenameFile implements FileRenamePolicy {
-    
+
     private HttpServletRequest request;
     private int userId;
-    
+
     public RenameFile(HttpServletRequest r, int id) {
         request = r;
         userId = id;
@@ -118,6 +158,5 @@ class RenameFile implements FileRenamePolicy {
         }
         return f;
     }
-    
-    
+
 }

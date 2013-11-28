@@ -50,6 +50,12 @@
     <servlet>
         <servlet-name>AvatarUploadPage</servlet-name>
         <servlet-class>servlet.AvatarUploadPage</servlet-class>
+        <multipart-config>
+            <location>/tmp</location>
+            <max-file-size>1048576</max-file-size> <!-- 1MB -->
+            <max-request-size>1148576</max-request-size>
+            <file-size-threshold>1048576</file-size-threshold>
+        </multipart-config>
     </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
@@ -77,7 +83,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AvatarUploadPage</servlet-name>
-        <url-pattern>/forum/avatar-upload-page</url-pattern>
+        <url-pattern>/forum/avatar</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
