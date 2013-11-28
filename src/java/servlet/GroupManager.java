@@ -36,11 +36,12 @@ public class GroupManager extends HttpServlet {
     
      // TITLE OF GROUPS PAGE & CONTENT OF GROUPS PAGE
     private static final String GROUP_MANAGER_TITLE = "My Group";
-    private static final String GROUPS_CONTENT_HEAD_TABLE = "<table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
+    private static final String GROUPS_CONTENT_HEAD_TABLE = "<table data-role=\"table\" id=\"user-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
             + "         <thead>\n"
             + "           <tr class=\"ui-bar-d\">\n"
             + "             <th>Name</th>\n"
             + "             <th>Accepted</th>\n"
+            + "              <th>Visible</th>\n"
             + "           </tr>\n"
             + "         </thead>\n";
     
@@ -50,20 +51,57 @@ public class GroupManager extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        //Setting Content Page
-        String groupsContent = "";
-         String groupsContentBodyTableEnd = "</tbody>\n"
-                + "       </table>";
-        String groupsContentBodyTable = "<tbody>\n";
+        //SETTING USER TABLE
+        String userContent = "";
+        
+         String userContentBodyTable =  "<tbody>\n";
+        
+         String userContentBodyTableEnd = "</tbody>\n"
+                + "       </table>\n";
+       
 
         //GETTING USER INFORMATION
         DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
         User logged = (User) request.getSession().getAttribute("user");
-        LinkedList<Group> Invites = manager.getInvites(logged);
-        Iterator<Group> i = Invites.iterator();
+       
+        //SETTING GROUP NAME TABLE
+        Group groupToEdit = manager.getGroupMadeByUser(logged);
+        String titleString = "Create New Group";
+        String nameString = "Insert new name";
         
+        if(groupToEdit != null){
+            titleString = "Edit Name";
+            nameString = groupToEdit.getName();
+        }
+              String groupTableContent = "<table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
+              + "         <thead>\n"
+              + "           <tr class=\"ui-bar-d\">\n"
+              + "             <th>"+ titleString +"</th>\n"
+              + "           </tr>\n"
+              + "         </thead>\n"
+              + "         <tbody>\n"
+              + "             <tr>\n"
+              // per qualche ragione il placeholder non prende le parole dopo il primo spazio
+              + "                 <th> <input type=\"text\" placeholder =" + nameString + "> </th>\n"
+              + "             </tr>\n"
+              + "        </tbody>\n"
+              + "</table>";
+                
+        
+        
+        //SHOW USERS FOLLOWING THE GROUP AND VISIBLE 
+        LinkedList<User> Invites = manager.getUsersForGroupAndVisible(logged);
+        Iterator<User> i = Invites.iterator();
          while (i.hasNext()) {
+             User userConsidered = i.next();
+             System.out.println(userConsidered.getName());
              
+             
+               userContentBodyTable += "<tr>\n"
+                + "             <th>" + userConsidered.getName() + "</th>\n"                                                  //User Name
+                + "             <td> </td>\n"      //Group Member 
+                + "             <td> </td>\n"       //Visible
+                + "           </tr>\n";
          }
         
         
@@ -71,8 +109,8 @@ public class GroupManager extends HttpServlet {
        try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
 
-            groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
-            HTML.printPage(out, GROUP_MANAGER_TITLE, "/forum", groupsContent);
+            userContent = groupTableContent + GROUPS_CONTENT_HEAD_TABLE  + userContentBodyTable + userContentBodyTableEnd;
+            HTML.printPage(out, GROUP_MANAGER_TITLE, "/forum", userContent);
 
         }
     }

@@ -248,7 +248,8 @@ public class DBManager implements Serializable {
       public LinkedList<User> getUsersForGroupAndVisible(User user) {
         LinkedList<User> u = new LinkedList<>();
         try {
-            String query = "SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = 1";
+            //togliere il creatore del gruppo dalla richiesta
+            String query = "SELECT * FROM (SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = TRUE) t natural join \"user\"";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, user.getId());
@@ -277,7 +278,7 @@ public class DBManager implements Serializable {
       public LinkedList<User> getUsersForGroupAndNotVisible(User user) {
         LinkedList<User> u = new LinkedList<>();
         try {
-            String query = "SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = 0";
+            String query = "SELECT * FROM (SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = FALSE) t natural join \"user\"";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, user.getId());
@@ -305,8 +306,7 @@ public class DBManager implements Serializable {
       public LinkedList<User> getUsersNotInGroup(User user) {
         LinkedList<User> u = new LinkedList<>();
         try {
-            //da correggere
-            String query = "SELECT * FROM \"user_group\" NATURAL RIGHT OUTER JOIN \"user\" WHERE creator_id = ? AND \"user_group\".user_id IS NULL";
+            String query = "select * from (select * from \"user_group\" natural join \"group\" where creator_id = ?) t natural right outer join \"user\" where t.user_id IS NULL";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, user.getId());
@@ -331,6 +331,31 @@ public class DBManager implements Serializable {
         }
         return u;
     }
-      
+       public Group getGroupMadeByUser(User user) {
+        Group u = null;
+        try {
+            String query = "SELECT * FROM \"group\" WHERE creator_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, user.getId());
+                ResultSet res = stm.executeQuery();
+                try {
+                   res.next();
+                    u = new Group(
+                        res.getInt("group_id"),
+                        res.getString("group_name"), 
+                        res.getInt("creator_id")
+                    );
+                } finally {
+                    res.close();
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return u;
+    }
       
 }
