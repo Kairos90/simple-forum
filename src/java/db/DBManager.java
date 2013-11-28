@@ -213,7 +213,7 @@ public class DBManager implements Serializable {
         return target;
     }
     
-      public LinkedList<Group> showInvites(User user) {
+      public LinkedList<Group> getInvites(User user) {
         LinkedList<Group> u = new LinkedList<>();
         try {
             String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND group_accepted = 0";
@@ -245,10 +245,10 @@ public class DBManager implements Serializable {
       
       
       
-      public LinkedList<UserGroup> showUsersForGroup(User user) {
-        LinkedList<UserGroup> u = new LinkedList<>();
+      public LinkedList<User> getUsersForGroupAndVisible(User user) {
+        LinkedList<User> u = new LinkedList<>();
         try {
-            String query = "SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ?";
+            String query = "SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = 1";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, user.getId());
@@ -256,11 +256,9 @@ public class DBManager implements Serializable {
                 try {
                     while (res.next()) {
                         u.add(
-                                new UserGroup(
+                                new User(
                                         res.getInt("user_id"), 
-                                        res.getInt("group_id"),
-                                        res.getBoolean("group_accepted"),
-                                        res.getBoolean("visible")
+                                        res.getString("user_name")
                                 )
                         );
                     }
@@ -275,5 +273,64 @@ public class DBManager implements Serializable {
         }
         return u;
     }
-
+      
+      public LinkedList<User> getUsersForGroupAndNotVisible(User user) {
+        LinkedList<User> u = new LinkedList<>();
+        try {
+            String query = "SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = 0";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, user.getId());
+                ResultSet res = stm.executeQuery();
+                try {
+                    while (res.next()) {
+                        u.add(
+                                new User(
+                                        res.getInt("user_id"), 
+                                        res.getString("user_name")
+                                )
+                        );
+                    }
+                } finally {
+                    res.close();
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return u;
+    }
+      public LinkedList<User> getUsersNotInGroup(User user) {
+        LinkedList<User> u = new LinkedList<>();
+        try {
+            //da correggere
+            String query = "SELECT * FROM \"user_group\" NATURAL RIGHT OUTER JOIN \"user\" WHERE creator_id = ? AND \"user_group\".user_id IS NULL";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, user.getId());
+                ResultSet res = stm.executeQuery();
+                try {
+                    while (res.next()) {
+                        u.add(
+                                new User(
+                                        res.getInt("user_id"), 
+                                        res.getString("user_name")
+                                )
+                        );
+                    }
+                } finally {
+                    res.close();
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return u;
+    }
+      
+      
 }

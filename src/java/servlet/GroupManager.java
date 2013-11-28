@@ -59,7 +59,7 @@ public class GroupManager extends HttpServlet {
         //GETTING USER INFORMATION
         DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
         User logged = (User) request.getSession().getAttribute("user");
-        LinkedList<Group> Invites = manager.showInvites(logged);
+        LinkedList<Group> Invites = manager.getInvites(logged);
         Iterator<Group> i = Invites.iterator();
         
          while (i.hasNext()) {
