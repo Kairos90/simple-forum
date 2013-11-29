@@ -247,14 +247,14 @@ public class DBManager implements Serializable {
         return u;
     }
 
-    public LinkedList<User> getUsersForGroupAndVisible(User user) {
+    public LinkedList<User> getUsersForGroupAndVisible(int user) {
         LinkedList<User> u = new LinkedList<>();
         try {
             //togliere il creatore del gruppo dalla richiesta
             String query = "SELECT * FROM (SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = TRUE) t natural join \"user\"";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
-                stm.setInt(1, user.getId());
+                stm.setInt(1, user);
                 ResultSet res = stm.executeQuery();
                 try {
                     while (res.next()) {
@@ -277,13 +277,13 @@ public class DBManager implements Serializable {
         return u;
     }
 
-    public LinkedList<User> getUsersForGroupAndNotVisible(User user) {
+    public LinkedList<User> getUsersForGroupAndNotVisible(int user) {
         LinkedList<User> u = new LinkedList<>();
         try {
             String query = "SELECT * FROM (SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = FALSE) t natural join \"user\"";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
-                stm.setInt(1, user.getId());
+                stm.setInt(1, user);
                 ResultSet res = stm.executeQuery();
                 try {
                     while (res.next()) {
@@ -306,13 +306,13 @@ public class DBManager implements Serializable {
         return u;
     }
 
-    public LinkedList<User> getUsersNotInGroup(User user) {
+    public LinkedList<User> getUsersNotInGroup(int user) {
         LinkedList<User> u = new LinkedList<>();
         try {
             String query = "select * from (select * from \"user_group\" natural join \"group\" where creator_id = ?) t natural right outer join \"user\" where t.user_id IS NULL";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
-                stm.setInt(1, user.getId());
+                stm.setInt(1, user);
                 ResultSet res = stm.executeQuery();
                 try {
                     while (res.next()) {
@@ -335,13 +335,13 @@ public class DBManager implements Serializable {
         return u;
     }
 
-    public Group getGroupMadeByUser(User user) {
+    public Group getGroupMadeByUser(int user) {
         Group u = null;
         try {
             String query = "SELECT * FROM \"group\" WHERE creator_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
-                stm.setInt(1, user.getId());
+                stm.setInt(1, user);
                 ResultSet res = stm.executeQuery();
                 try {
                     res.next();
@@ -387,7 +387,7 @@ public class DBManager implements Serializable {
                 for (Map.Entry<String, String[]> entry : m.entrySet()) {
                     String key = entry.getKey();
                     String[] value = entry.getValue();
-                    // ...
+                    //switch
                 }
 //                stm.setBoolean(1,m.get(group_accepted));
 //                stm.setBoolean(2,m.get("visible"));

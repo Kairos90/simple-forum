@@ -41,8 +41,8 @@ public class GroupManager extends HttpServlet {
             + "         <thead>\n"
             + "           <tr class=\"ui-bar-d\">\n"
             + "             <th>Name</th>\n"
-            + "             <th>Accepted</th>\n"
-            + "              <th>Visible</th>\n"
+            + "             <th>Invited</th>\n"
+            + "              <th>Invisible</th>\n"
             + "           </tr>\n"
             + "         </thead>\n";
     
@@ -75,7 +75,7 @@ public class GroupManager extends HttpServlet {
         
          String userContentBodyTableEnd = "</tbody>\n"
                 + "       </table>\n"
-                + "   <input type=\"submit\" value=\"submit\">"
+                + "   <input type=\"submit\" value=\"submit\" data-inline=\"true\">"
                 + "</form>";
        
 
@@ -84,7 +84,7 @@ public class GroupManager extends HttpServlet {
         User logged = (User) request.getSession().getAttribute("user");
        
         //SETTING GROUP NAME TABLE
-        Group groupToEdit = manager.getGroupMadeByUser(logged);
+        Group groupToEdit = manager.getGroupMadeByUser(logged.getId());
         String titleString = "Create New Group";
         String nameString = "Insert new name";
         
@@ -110,38 +110,38 @@ public class GroupManager extends HttpServlet {
         
         
         //SHOW USERS FOLLOWING THE GROUP AND VISIBLE 
-        LinkedList<User> visibleFollowinUsers = manager.getUsersForGroupAndVisible(logged);
+        LinkedList<User> visibleFollowinUsers = manager.getUsersForGroupAndVisible(logged.getId());
         Iterator<User> i = visibleFollowinUsers.iterator();
          while (i.hasNext()) {
              User userConsidered = i.next();
                userContentBodyTable += "<tr>\n"
                 + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
-                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"member\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
-                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"visible\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Visible
+                + "             <td> <input name=\""+userConsidered.getId()+"\" value=\"member\" type=\"checkbox\" checked disabled> </td>\n"      //Group Member 
+                + "             <td> <input name=\""+userConsidered.getId()+"\" value=\"invisible\" type=\"checkbox\"> </td>\n"      //Visible
                 + "           </tr>\n";
          }
          
          //SHOW USERS FOLLOWING THE GROUP BUT NOT VISIBLE 
-        LinkedList<User> notVisibleFollowinUsers = manager.getUsersForGroupAndNotVisible(logged);
+        LinkedList<User> notVisibleFollowinUsers = manager.getUsersForGroupAndNotVisible(logged.getId());
         Iterator<User> s = notVisibleFollowinUsers.iterator();
          while (s.hasNext()) {
              User userConsidered = s.next();             
                userContentBodyTable += "<tr>\n"
                 + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
-                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"member\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
-                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"visible\" type=\"checkbox\"> </td>\n"    //Visible
+                + "             <td> <input name=\""+userConsidered.getId()+"\" value=\"member\" type=\"checkbox\" checked disabled> </td>\n"      //Group Member 
+                + "             <td> <input name=\""+userConsidered.getId()+"\" value=\"invisible\" type=\"checkbox\" checked> </td>\n"    //Visible
                 + "           </tr>\n";
          }
          
         //SHOW ALL THE OTHER USERS
-        LinkedList<User> otherUsers = manager.getUsersNotInGroup(logged);
+        LinkedList<User> otherUsers = manager.getUsersNotInGroup(logged.getId());
         Iterator<User> o = otherUsers.iterator();
          while (o.hasNext()) {
              User userConsidered = o.next();             
                userContentBodyTable += "<tr>\n"
                 + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
-                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"member\" type=\"checkbox\"> </td>\n"    //Group Member 
-                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"visible\" type=\"checkbox\"> </td>\n"    //Visible
+                + "             <td> <input name=\""+userConsidered.getId()+"\" value=\"member\" type=\"checkbox\"> </td>\n"    //Group Member 
+                + "             <td> <input name=\""+userConsidered.getId()+"\" value=\"invisible\" type=\"checkbox\" disabled> </td>\n"    //Visible
                 + "           </tr>\n";
          }
         
@@ -171,15 +171,13 @@ public class GroupManager extends HttpServlet {
         processRequest(request, response);
         DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
         User logged = (User) request.getSession().getAttribute("user");
-        Group groupToEdit = manager.getGroupMadeByUser(logged);
+        Group groupToEdit = manager.getGroupMadeByUser(logged.getId());
 
         String newName = request.getParameter("change_group_name");
         System.out.println(newName);
         manager.changeGroupName(groupToEdit, newName);
         
-        Map<String, String[]> m = request.getParameterMap();
-        
-        
+        Map <String, String[]> m = request.getParameterMap();
         
         try (PrintWriter out = response.getWriter()) {
             String userContent = newName + "ciao";
