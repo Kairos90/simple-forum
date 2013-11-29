@@ -1,5 +1,6 @@
 function duplicate(selector) {
     var e = $(selector);
-    e.clone().insertAfter(e);
+    e.clone().insertAfter(e).show(500);
+    return true;
 }
 

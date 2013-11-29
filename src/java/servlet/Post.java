@@ -6,13 +6,20 @@
 
 package servlet;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Collection;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -29,15 +36,15 @@ public class Post extends HttpServlet {
 "                    <textarea id=\"text\" placeholder=\"Bla bal bla\" name=\"text\"></textarea>\n" +
 "                </li>\n" +
 "                <li data-role=\"fieldcontain\">\n" +
-"                    <label for=\"text\">Add more files:</label>\n" +
-"                    <button type=\"button\" onclick=\"duplicate('#file-li')\">Add one more file</button>\n" +
+"                    <label for=\"button\">Add more files:</label>\n" +
+"                    <button type=\"button\" id=\"button\" data-inline=\"true\" data-mini=\"true\" onclick=\"duplicate('#file-li')\">Add one more file</button>\n" +
 "                </li>\n" +
-"                <li data-role=\"fieldcontain\" id=\"file-li\" style=\"display: none\">\n" +
+"                <li data-role=\"fieldcontain\" id=\"file-li\">\n" +
 "                    <label for=\"file\">File:</label>\n" +
 "                    <input type=\"file\" id=\"file\" name=\"file\">\n" +
 "                </li>\n" +
 "            </ul>\n" +
-"            <button type=\"submit\">Post it</button>\n" +
+"            <button data-inline=\"true\" data-theme=\"b\" type=\"submit\">Post it</button>\n" +
 "        </form>";
 
     /**
@@ -67,7 +74,36 @@ public class Post extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        Collection<Part> parts = request.getParts();
+    }
+    
+    public void handleUpload(HttpServletRequest request, String paramName, String newFilePathWithName) throws IOException, ServletException {
+        final Part filePart = request.getPart(paramName);
+
+        OutputStream out = null;
+        InputStream filecontent = null;
+
+        try {
+            out = new FileOutputStream(new File(newFilePathWithName));
+            filecontent = filePart.getInputStream();
+
+            int read;
+            final byte[] bytes = new byte[1024];
+
+            while ((read = filecontent.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            this.getServletContext().log("File{0}being uploaded to {1}");
+        } catch (FileNotFoundException fne) {
+            this.getServletContext().log(fne, "Problems during file upload. Error: {0}");
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (filecontent != null) {
+                filecontent.close();
+            }
+        }
     }
 
     /**
