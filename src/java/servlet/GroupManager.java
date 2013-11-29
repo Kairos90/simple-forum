@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -115,8 +116,8 @@ public class GroupManager extends HttpServlet {
              User userConsidered = i.next();
                userContentBodyTable += "<tr>\n"
                 + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
-                + "             <td> <input name=\""+userConsidered.getId()+"member\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
-                + "             <td> <input name=\""+userConsidered.getId()+"visible\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Visible
+                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"member\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
+                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"visible\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Visible
                 + "           </tr>\n";
          }
          
@@ -127,8 +128,8 @@ public class GroupManager extends HttpServlet {
              User userConsidered = s.next();             
                userContentBodyTable += "<tr>\n"
                 + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
-                + "             <td> <input name=\""+userConsidered.getId()+"member\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
-                + "             <td> <input name=\""+userConsidered.getId()+"visible\" type=\"checkbox\"> </td>\n"    //Visible
+                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"member\" type=\"checkbox\" checked=\"checked\"> </td>\n"      //Group Member 
+                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"visible\" type=\"checkbox\"> </td>\n"    //Visible
                 + "           </tr>\n";
          }
          
@@ -139,8 +140,8 @@ public class GroupManager extends HttpServlet {
              User userConsidered = o.next();             
                userContentBodyTable += "<tr>\n"
                 + "             <td>" + userConsidered.getName() + "</td>\n"                     //User Name
-                + "             <td> <input name=\""+userConsidered.getId()+"member\" type=\"checkbox\"> </td>\n"    //Group Member 
-                + "             <td> <input name=\""+userConsidered.getId()+"visible\" type=\"checkbox\"> </td>\n"    //Visible
+                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"member\" type=\"checkbox\"> </td>\n"    //Group Member 
+                + "             <td> <input name=\""+userConsidered.getId()+"\" id=\"visible\" type=\"checkbox\"> </td>\n"    //Visible
                 + "           </tr>\n";
          }
         
@@ -175,6 +176,9 @@ public class GroupManager extends HttpServlet {
         String newName = request.getParameter("change_group_name");
         System.out.println(newName);
         manager.changeGroupName(groupToEdit, newName);
+        
+        Map<String, String[]> m = request.getParameterMap();
+        
         
         
         try (PrintWriter out = response.getWriter()) {

@@ -12,7 +12,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -365,6 +367,29 @@ public class DBManager implements Serializable {
             try {
                 stm.setString(1,name);
                 stm.setInt(2,u.getId());
+                stm.executeQuery();
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+        
+         public void updateMyGroupValues(Group u, Map <String, String[]> m) {
+        try {
+            String query = "UPDATE \"user_group\" SET group_accepted = ?, visible = ? WHERE group_id = ? AND user_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(3, u.getId());
+                for (Map.Entry<String, String[]> entry : m.entrySet()) {
+                    String key = entry.getKey();
+                    String[] value = entry.getValue();
+    // ...
+}
+//                stm.setBoolean(1,m.get(group_accepted));
+//                stm.setBoolean(2,m.get("visible"));
+//                stm.setInt(4,)
                 stm.executeQuery();
             } finally {
                 stm.close();
