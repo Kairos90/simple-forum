@@ -128,8 +128,8 @@ public class DBManager implements Serializable {
         return p;
     }
     
-    public LinkedList<File> getPostFiles(Post p) {
-        LinkedList<File> f = new LinkedList<>();
+    public LinkedList<GroupFile> getPostFiles(Post p) {
+        LinkedList<GroupFile> f = new LinkedList<>();
         try {
             String query = "SELECT * FROM \"file\" NATURAL JOIN \"post\" WHERE post_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
@@ -139,7 +139,7 @@ public class DBManager implements Serializable {
                 try {
                     while (res.next()) {
                         f.add(
-                                new File(
+                                new GroupFile(
                                         res.getString("file_name"),
                                         res.getString("file_mime"),
                                         res.getInt("file_size")

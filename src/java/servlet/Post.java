@@ -6,6 +6,8 @@
 
 package servlet;
 
+import db.DBManager;
+import db.Group;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -59,8 +61,14 @@ public class Post extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PrintWriter out = response.getWriter();
+        DBManager dbmanager = (DBManager) getServletContext().getAttribute("dbmanager");
         int groupId = Integer.parseInt(request.getParameter("id"));
-        HTML.printPage(out, "Write your post", "forum/group?id=" + groupId, FORM_HTML);
+        Group group = dbmanager.getGroup(groupId);
+        if(group == null) {
+            HTML.print404(out);
+        } else {
+            HTML.printPage(out, "Write your post", "forum/group?id=" + groupId, FORM_HTML);
+        }
     }
 
     /**
@@ -77,8 +85,23 @@ public class Post extends HttpServlet {
         Collection<Part> parts = request.getParts();
     }
     
-    public void handleUpload(HttpServletRequest request, String paramName, String newFilePathWithName) throws IOException, ServletException {
-        final Part filePart = request.getPart(paramName);
+    private String getFileName(final Part part) {
+        final String partHeader = part.getHeader("content-disposition");
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(
+                        content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
+    }
+    
+    private void renameGroupFile(String name) {
+        
+    }
+    
+    public void handleUpload(HttpServletRequest request, Part part, String newFilePathWithName) throws IOException, ServletException {
+        final Part filePart = part;
 
         OutputStream out = null;
         InputStream filecontent = null;

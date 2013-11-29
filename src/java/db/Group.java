@@ -6,6 +6,9 @@
 
 package db;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+
 /**
  *
  * @author paolo
@@ -32,5 +35,10 @@ public class Group {
     
     public int getCreator() {
         return creator;
+    }
+    
+    public boolean hasFileNamed(HttpServletRequest request, String name) {
+        String groupFilesPath = request.getServletContext().getRealPath("/static/files/" + id);
+        return new File(groupFilesPath + File.separator + name).exists();
     }
 }

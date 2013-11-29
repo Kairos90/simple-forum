@@ -10,12 +10,12 @@ package db;
  *
  * @author paolo
  */
-public class File {
+public class GroupFile {
     private String name;
     private String mime;
     private int size;
     
-    public File(String name, String mime, int size) {
+    public GroupFile(String name, String mime, int size) {
         this.name = name;
         this.mime = mime;
         this.size = size;
