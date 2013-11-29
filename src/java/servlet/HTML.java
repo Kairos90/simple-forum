@@ -26,6 +26,7 @@ public class HTML {
             + "<link rel=\"stylesheet\" href=\"/static/jquery.mobile-1.3.2.min.css\">"
             + "<script type=\"text/javascript\" src=\"/static/jquery-1.9.1.min.js\"></script>"
             + "<script type=\"text/javascript\" src=\"/static/jquery.mobile-1.3.2.min.js\"></script>"
+            + "<script type=\"text/javascript\" src=\"/static/utils.js\"></script>"
             + "</head>"
             + "<body>"
             + "<div data-role=\"page\">"

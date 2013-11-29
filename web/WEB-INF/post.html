@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+        <form>
+            <ul data-role="listview" data-inset="true">
+                <li data-role="fieldcontain">
+                    <label for="text">Post text:</label>
+                    <textarea id="text" placeholder="Bla bal bla" name="text"></textarea>
+                </li>
+                <li data-role="fieldcontain">
+                    <label for="text">Add more files:</label>
+                    <button type="button" onclick="duplicate('#file-li')">Add one more file</button>
+                </li>
+                <li data-role="fieldcontain" id="file-li" style="display: none">
+                    <label for="file">File:</label>
+                    <input type="file" id="file" name="file">
+                </li>
+            </ul>
+            <button type="submit">Login</button>
+        </form>
+    </body>
+</html>
