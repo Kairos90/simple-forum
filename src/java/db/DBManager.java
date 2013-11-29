@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,7 +70,7 @@ public class DBManager implements Serializable {
         }
         return u;
     }
-    
+
     public LinkedList<Group> getUserGroups(User u) {
         LinkedList<Group> g = new LinkedList<>();
         try {
@@ -82,9 +83,9 @@ public class DBManager implements Serializable {
                     while (res.next()) {
                         g.add(
                                 new Group(
-                                    res.getInt("group_id"),
-                                    res.getString("group_name"), 
-                                    res.getInt("creator_id")
+                                        res.getInt("group_id"),
+                                        res.getString("group_name"),
+                                        res.getInt("creator_id")
                                 )
                         );
                     }
@@ -99,7 +100,7 @@ public class DBManager implements Serializable {
         }
         return g;
     }
-    
+
     public LinkedList<Post> getGroupPosts(Group g) {
         LinkedList<Post> p = new LinkedList<>();
         try {
@@ -130,7 +131,7 @@ public class DBManager implements Serializable {
         }
         return p;
     }
-    
+
     public LinkedList<GroupFile> getPostFiles(Post p) {
         LinkedList<GroupFile> f = new LinkedList<>();
         try {
@@ -160,17 +161,17 @@ public class DBManager implements Serializable {
         }
         return f;
     }
-    
+
     public Date getLatestPost(Group group) {
         Date date = null;
-        
+
         try {
             String query = "SELECT MAX(post_date) AS max_date FROM \"post\" WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, group.getId());
                 ResultSet res = stm.executeQuery();
-                
+
                 try {
                     res.next();
                     date = res.getDate("max_date");
@@ -185,23 +186,23 @@ public class DBManager implements Serializable {
         }
         return date;
     }
-    
+
     public Group getGroup(int groupId) {
         Group target = null;
-        
+
         try {
             String query = "SELECT * FROM \"group\" WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, groupId);
                 ResultSet res = stm.executeQuery();
-                
+
                 try {
                     res.next();
                     target = new Group(
-                        res.getInt("group_id"),
-                        res.getString("group_name"), 
-                        res.getInt("creator_id")
+                            res.getInt("group_id"),
+                            res.getString("group_name"),
+                            res.getInt("creator_id")
                     );
                 } finally {
                     res.close();
@@ -212,11 +213,11 @@ public class DBManager implements Serializable {
         } catch (SQLException ex) {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return target;
     }
-    
-      public LinkedList<Group> getInvites(User user) {
+
+    public LinkedList<Group> getInvites(User user) {
         LinkedList<Group> u = new LinkedList<>();
         try {
             String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND group_accepted = 0";
@@ -228,7 +229,7 @@ public class DBManager implements Serializable {
                     while (res.next()) {
                         u.add(
                                 new Group(
-                                        res.getInt("group_id"), 
+                                        res.getInt("group_id"),
                                         res.getString("group_name"),
                                         res.getInt("creator_id")
                                 )
@@ -245,10 +246,8 @@ public class DBManager implements Serializable {
         }
         return u;
     }
-      
-      
-      
-      public LinkedList<User> getUsersForGroupAndVisible(User user) {
+
+    public LinkedList<User> getUsersForGroupAndVisible(User user) {
         LinkedList<User> u = new LinkedList<>();
         try {
             //togliere il creatore del gruppo dalla richiesta
@@ -261,7 +260,7 @@ public class DBManager implements Serializable {
                     while (res.next()) {
                         u.add(
                                 new User(
-                                        res.getInt("user_id"), 
+                                        res.getInt("user_id"),
                                         res.getString("user_name")
                                 )
                         );
@@ -277,8 +276,8 @@ public class DBManager implements Serializable {
         }
         return u;
     }
-      
-      public LinkedList<User> getUsersForGroupAndNotVisible(User user) {
+
+    public LinkedList<User> getUsersForGroupAndNotVisible(User user) {
         LinkedList<User> u = new LinkedList<>();
         try {
             String query = "SELECT * FROM (SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = FALSE) t natural join \"user\"";
@@ -290,7 +289,7 @@ public class DBManager implements Serializable {
                     while (res.next()) {
                         u.add(
                                 new User(
-                                        res.getInt("user_id"), 
+                                        res.getInt("user_id"),
                                         res.getString("user_name")
                                 )
                         );
@@ -306,7 +305,8 @@ public class DBManager implements Serializable {
         }
         return u;
     }
-      public LinkedList<User> getUsersNotInGroup(User user) {
+
+    public LinkedList<User> getUsersNotInGroup(User user) {
         LinkedList<User> u = new LinkedList<>();
         try {
             String query = "select * from (select * from \"user_group\" natural join \"group\" where creator_id = ?) t natural right outer join \"user\" where t.user_id IS NULL";
@@ -318,7 +318,7 @@ public class DBManager implements Serializable {
                     while (res.next()) {
                         u.add(
                                 new User(
-                                        res.getInt("user_id"), 
+                                        res.getInt("user_id"),
                                         res.getString("user_name")
                                 )
                         );
@@ -334,7 +334,8 @@ public class DBManager implements Serializable {
         }
         return u;
     }
-       public Group getGroupMadeByUser(User user) {
+
+    public Group getGroupMadeByUser(User user) {
         Group u = null;
         try {
             String query = "SELECT * FROM \"group\" WHERE creator_id = ?";
@@ -343,11 +344,11 @@ public class DBManager implements Serializable {
                 stm.setInt(1, user.getId());
                 ResultSet res = stm.executeQuery();
                 try {
-                   res.next();
+                    res.next();
                     u = new Group(
-                        res.getInt("group_id"),
-                        res.getString("group_name"), 
-                        res.getInt("creator_id")
+                            res.getInt("group_id"),
+                            res.getString("group_name"),
+                            res.getInt("creator_id")
                     );
                 } finally {
                     res.close();
@@ -360,14 +361,14 @@ public class DBManager implements Serializable {
         }
         return u;
     }
- 
+
     public void changeGroupName(Group u, String name) {
         try {
             String query = "UPDATE \"group\" SET group_name = ? WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
-                stm.setString(1,name);
-                stm.setInt(2,u.getId());
+                stm.setString(1, name);
+                stm.setInt(2, u.getId());
                 stm.executeQuery();
             } finally {
                 stm.close();
@@ -376,14 +377,21 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void addGroupFiles(Group group, Enumeration files, MultipartRequest multipart) {
+
+    public void updateMyGroupValues(Group u, Map<String, String[]> m) {
         try {
-            String query = "INSERT INTO \"group\" SET group_name = ? WHERE group_id = ?";
+            String query = "UPDATE \"user_group\" SET group_accepted = ?, visible = ? WHERE group_id = ? AND user_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
-                stm.setString(1,name);
-                stm.setInt(2,u.getId());
+                stm.setInt(3, u.getId());
+                for (Map.Entry<String, String[]> entry : m.entrySet()) {
+                    String key = entry.getKey();
+                    String[] value = entry.getValue();
+                    // ...
+                }
+                //                stm.setBoolean(1,m.get(group_accepted));
+                //                stm.setBoolean(2,m.get("visible"));
+                //                stm.setInt(4,)
                 stm.executeQuery();
             } finally {
                 stm.close();
@@ -391,6 +399,9 @@ public class DBManager implements Serializable {
         } catch (SQLException ex) {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void addGroupFiles(Group group, Enumeration files, MultipartRequest multipart) {
         while (files.hasMoreElements()) {
             String name = (String) files.nextElement();
             String filename = multipart.getFilesystemName(name);
@@ -400,5 +411,4 @@ public class DBManager implements Serializable {
 
         }
     }
-      
 }
