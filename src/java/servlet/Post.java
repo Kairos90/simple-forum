@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package servlet;
 
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 import db.DBManager;
 import db.Group;
 import java.io.File;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,25 +31,25 @@ import javax.servlet.http.Part;
  */
 @WebServlet(name = "Post", urlPatterns = {"/forum/post"})
 public class Post extends HttpServlet {
-    
-    private static final String FORM_HTML =
-            "<form>\n" +
-"            <ul data-role=\"listview\" data-inset=\"true\">\n" +
-"                <li data-role=\"fieldcontain\">\n" +
-"                    <label for=\"text\">Post text:</label>\n" +
-"                    <textarea id=\"text\" placeholder=\"Bla bal bla\" name=\"text\"></textarea>\n" +
-"                </li>\n" +
-"                <li data-role=\"fieldcontain\">\n" +
-"                    <label for=\"button\">Add more files:</label>\n" +
-"                    <button type=\"button\" id=\"button\" data-inline=\"true\" data-mini=\"true\" onclick=\"duplicate('#file-li')\">Add one more file</button>\n" +
-"                </li>\n" +
-"                <li data-role=\"fieldcontain\" id=\"file-li\">\n" +
-"                    <label for=\"file\">File:</label>\n" +
-"                    <input type=\"file\" id=\"file\" name=\"file\">\n" +
-"                </li>\n" +
-"            </ul>\n" +
-"            <button data-inline=\"true\" data-theme=\"b\" type=\"submit\">Post it</button>\n" +
-"        </form>";
+
+    private static final String FORM_HTML
+            = "<form action=\"/forum/post\" data-ajax=\"false\" method=\"post\" enctype=\"multipart/form-data\">\n"
+            + "            <ul data-role=\"listview\" data-inset=\"true\">\n"
+            + "                <li data-role=\"fieldcontain\">\n"
+            + "                    <label for=\"text\">Post text:</label>\n"
+            + "                    <textarea id=\"text\" placeholder=\"Bla bal bla\" name=\"text\"></textarea>\n"
+            + "                </li>\n"
+            + "                <li data-role=\"fieldcontain\">\n"
+            + "                    <label for=\"button\">Add more files:</label>\n"
+            + "                    <button type=\"button\" id=\"button\" data-inline=\"true\" data-mini=\"true\" onclick=\"duplicate('#file-li')\">Add one more file</button>\n"
+            + "                </li>\n"
+            + "                <li data-role=\"fieldcontain\" id=\"file-li\">\n"
+            + "                    <label for=\"file\">File:</label>\n"
+            + "                    <input type=\"file\" id=\"file\" name=\"file\">\n"
+            + "                </li>\n"
+            + "            </ul>\n"
+            + "            <button data-inline=\"true\" data-theme=\"b\" type=\"submit\">Post it</button>\n"
+            + "        </form>";
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -64,7 +66,7 @@ public class Post extends HttpServlet {
         DBManager dbmanager = (DBManager) getServletContext().getAttribute("dbmanager");
         int groupId = Integer.parseInt(request.getParameter("id"));
         Group group = dbmanager.getGroup(groupId);
-        if(group == null) {
+        if (group == null) {
             HTML.print404(out);
         } else {
             HTML.printPage(out, "Write your post", "forum/group?id=" + groupId, FORM_HTML);
@@ -82,53 +84,25 @@ public class Post extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Collection<Part> parts = request.getParts();
-    }
-    
-    private String getFileName(final Part part) {
-        final String partHeader = part.getHeader("content-disposition");
-        for (String content : part.getHeader("content-disposition").split(";")) {
-            if (content.trim().startsWith("filename")) {
-                return content.substring(
-                        content.indexOf('=') + 1).trim().replace("\"", "");
+        PrintWriter out = response.getWriter();
+        DBManager dbmanager = (DBManager) getServletContext().getAttribute("dbmanager");
+        int groupId = Integer.parseInt(request.getParameter("id"));
+        Group group = dbmanager.getGroup(groupId);
+        if (group == null) {
+            HTML.print404(out);
+        } else {
+            try {
+                MultipartRequest multipart = new MultipartRequest(request, group.getRealFilesPath(request), 10 * 1024 * 1024, "UTF-8", new DefaultFileRenamePolicy());
+                
+                Enumeration files = multipart.getFileNames();
+                
+            } catch (IOException ex) {
+                this.getServletContext().log(ex, "Problems during file upload.");
             }
         }
-        return null;
+
     }
     
-    private void renameGroupFile(String name) {
-        
-    }
-    
-    public void handleUpload(HttpServletRequest request, Part part, String newFilePathWithName) throws IOException, ServletException {
-        final Part filePart = part;
-
-        OutputStream out = null;
-        InputStream filecontent = null;
-
-        try {
-            out = new FileOutputStream(new File(newFilePathWithName));
-            filecontent = filePart.getInputStream();
-
-            int read;
-            final byte[] bytes = new byte[1024];
-
-            while ((read = filecontent.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            this.getServletContext().log("File{0}being uploaded to {1}");
-        } catch (FileNotFoundException fne) {
-            this.getServletContext().log(fne, "Problems during file upload. Error: {0}");
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (filecontent != null) {
-                filecontent.close();
-            }
-        }
-    }
-
     /**
      * Returns a short description of the servlet.
      *
@@ -136,7 +110,7 @@ public class Post extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Servet to handle creation of new posts";
     }// </editor-fold>
 
 }

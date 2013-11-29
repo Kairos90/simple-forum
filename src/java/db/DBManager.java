@@ -5,6 +5,8 @@
  */
 package db;
 
+import com.oreilly.servlet.MultipartRequest;
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.Date;
@@ -12,7 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Iterator;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -390,6 +392,9 @@ public class DBManager implements Serializable {
 //                stm.setBoolean(1,m.get(group_accepted));
 //                stm.setBoolean(2,m.get("visible"));
 //                stm.setInt(4,)
+                //                stm.setBoolean(1,m.get(group_accepted));
+                //                stm.setBoolean(2,m.get("visible"));
+                //                stm.setInt(4,)
                 stm.executeQuery();
             } finally {
                 stm.close();
@@ -399,4 +404,14 @@ public class DBManager implements Serializable {
         }
     }
 
+    public void addGroupFiles(Group group, Enumeration files, MultipartRequest multipart) {
+        while (files.hasMoreElements()) {
+            String name = (String) files.nextElement();
+            String filename = multipart.getFilesystemName(name);
+            String originalFilename = multipart.getOriginalFileName(name);
+            String type = multipart.getContentType(name);
+            File f = multipart.getFile(name);
+
+        }
+    }
 }
