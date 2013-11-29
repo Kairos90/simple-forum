@@ -5,6 +5,8 @@
  */
 package db;
 
+import com.oreilly.servlet.MultipartRequest;
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.Date;
@@ -12,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -358,7 +361,7 @@ public class DBManager implements Serializable {
         return u;
     }
  
-        public void changeGroupName(Group u, String name) {
+    public void changeGroupName(Group u, String name) {
         try {
             String query = "UPDATE \"group\" SET group_name = ? WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
@@ -373,6 +376,29 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-       
-       
+    
+    public void addGroupFiles(Group group, Enumeration files, MultipartRequest multipart) {
+        try {
+            String query = "INSERT INTO \"group\" SET group_name = ? WHERE group_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setString(1,name);
+                stm.setInt(2,u.getId());
+                stm.executeQuery();
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        while (files.hasMoreElements()) {
+            String name = (String) files.nextElement();
+            String filename = multipart.getFilesystemName(name);
+            String originalFilename = multipart.getOriginalFileName(name);
+            String type = multipart.getContentType(name);
+            File f = multipart.getFile(name);
+
+        }
+    }
+      
 }
