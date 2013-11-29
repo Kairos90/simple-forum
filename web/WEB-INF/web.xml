@@ -57,6 +57,10 @@
             <file-size-threshold>1048576</file-size-threshold>
         </multipart-config>
     </servlet>
+    <servlet>
+        <servlet-name>PdfGenerator</servlet-name>
+        <servlet-class>servlet.PdfGenerator</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/forum</url-pattern>
@@ -84,6 +88,10 @@
     <servlet-mapping>
         <servlet-name>AvatarUploadPage</servlet-name>
         <url-pattern>/forum/avatar</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PdfGenerator</servlet-name>
+        <url-pattern>/forum/pdf-generator</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
