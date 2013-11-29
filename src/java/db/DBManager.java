@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Map;
@@ -198,12 +199,13 @@ public class DBManager implements Serializable {
                 ResultSet res = stm.executeQuery();
 
                 try {
-                    res.next();
-                    target = new Group(
-                            res.getInt("group_id"),
-                            res.getString("group_name"),
-                            res.getInt("creator_id")
-                    );
+                    if (res.next()) {
+                        target = new Group(
+                                res.getInt("group_id"),
+                                res.getString("group_name"),
+                                res.getInt("creator_id")
+                        );
+                    }
                 } finally {
                     res.close();
                 }
@@ -247,14 +249,14 @@ public class DBManager implements Serializable {
         return u;
     }
 
-    public LinkedList<User> getUsersForGroupAndVisible(int user) {
+    public LinkedList<User> getUsersForGroupAndVisible(int group) {
         LinkedList<User> u = new LinkedList<>();
         try {
             //togliere il creatore del gruppo dalla richiesta
-            String query = "SELECT * FROM (SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = TRUE) t natural join \"user\"";
+            String query = "SELECT * FROM (SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE group_id = ? AND visible = TRUE) t natural join \"user\"";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
-                stm.setInt(1, user);
+                stm.setInt(1, group);
                 ResultSet res = stm.executeQuery();
                 try {
                     while (res.next()) {
@@ -277,13 +279,13 @@ public class DBManager implements Serializable {
         return u;
     }
 
-    public LinkedList<User> getUsersForGroupAndNotVisible(int user) {
+    public LinkedList<User> getUsersForGroupAndNotVisible(int group) {
         LinkedList<User> u = new LinkedList<>();
         try {
-            String query = "SELECT * FROM (SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE creator_id = ? AND visible = FALSE) t natural join \"user\"";
+            String query = "SELECT * FROM (SELECT * FROM \"group\" NATURAL JOIN \"user_group\" WHERE group_id = ? AND visible = FALSE) t natural join \"user\"";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
-                stm.setInt(1, user);
+                stm.setInt(1, group);
                 ResultSet res = stm.executeQuery();
                 try {
                     while (res.next()) {
@@ -306,13 +308,13 @@ public class DBManager implements Serializable {
         return u;
     }
 
-    public LinkedList<User> getUsersNotInGroup(int user) {
+    public LinkedList<User> getUsersNotInGroup(int group) {
         LinkedList<User> u = new LinkedList<>();
         try {
-            String query = "select * from (select * from \"user_group\" natural join \"group\" where creator_id = ?) t natural right outer join \"user\" where t.user_id IS NULL";
+            String query = "select * from (select * from \"user_group\" natural join \"group\" where group_id = ?) t natural right outer join \"user\" where t.user_id IS NULL";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
-                stm.setInt(1, user);
+                stm.setInt(1, group);
                 ResultSet res = stm.executeQuery();
                 try {
                     while (res.next()) {
@@ -362,14 +364,14 @@ public class DBManager implements Serializable {
         return u;
     }
 
-    public void changeGroupName(Group u, String name) {
+    public void changeGroupName(int group, String name) {
         try {
             String query = "UPDATE \"group\" SET group_name = ? WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setString(1, name);
-                stm.setInt(2, u.getId());
-                stm.executeQuery();
+                stm.setInt(2, group);
+                stm.executeUpdate();
             } finally {
                 stm.close();
             }
@@ -378,30 +380,92 @@ public class DBManager implements Serializable {
         }
     }
 
-    public void updateMyGroupValues(Group u, Map<String, String[]> m) {
+    public void updateMyGroupValues(int group, Map<String, String[]> m) {
         try {
-            String query = "UPDATE \"user_group\" SET group_accepted = ?, visible = ? WHERE group_id = ? AND user_id = ?";
+            String query = "UPDATE \"user_group\" SET visible = ? WHERE group_id = ? AND user_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
+            query = "INSERT INTO \"user_group\"(group_accepted, group_id, visible, user_id) VALUES(?, ?, ?, ?)";
+            PreparedStatement stm2 = connection.prepareStatement(query);
             try {
-                stm.setInt(3, u.getId());
                 for (Map.Entry<String, String[]> entry : m.entrySet()) {
                     String key = entry.getKey();
-                    String[] value = entry.getValue();
-                    //switch
+                    try {
+                        int userId = Integer.parseInt(key);
+                        String[] value = entry.getValue();
+
+                        switch (value[0]) {
+                            case "member":
+                                stm2.setInt(2, group);
+                                stm2.setBoolean(1, false);
+                                stm2.setBoolean(3, true);
+                                stm2.setInt(4, userId);
+                                stm2.executeUpdate();
+                                break;
+                            case "invisible":
+                                stm.setInt(2, group);
+                                stm.setBoolean(1, false);
+                                stm.setInt(3, userId);
+                                stm.executeUpdate();
+                                break;
+                            case "visible":
+                                stm.setInt(2, group);
+                                stm.setBoolean(1, true);
+                                stm.setInt(3, userId);
+                                stm.executeUpdate();
+
+                        }
+                    } catch (Exception e) {
+                        Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, e);
+                    }
+
                 }
-//                stm.setBoolean(1,m.get(group_accepted));
-//                stm.setBoolean(2,m.get("visible"));
-//                stm.setInt(4,)
-                //                stm.setBoolean(1,m.get(group_accepted));
-                //                stm.setBoolean(2,m.get("visible"));
-                //                stm.setInt(4,)
-                stm.executeQuery();
             } finally {
                 stm.close();
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public int createGroup(int creator, String name) {
+        int groupId = 0;
+        try {
+            String query = "INSERT INTO \"group\"(creator_id, group_name) VALUES(?, ?)";
+            PreparedStatement stm = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            try {
+                stm.setInt(1, creator);
+                stm.setString(2, name);
+                stm.executeUpdate();
+                ResultSet rs = stm.getGeneratedKeys();
+                if(rs != null)
+                    if (rs.next()) {
+                        groupId = rs.getInt(1);
+                    }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (groupId > 0) {
+            try {
+                String query = "INSERT INTO \"user_group\"(group_accepted, group_id, visible, user_id) VALUES(?, ?, ?, ?)";
+                PreparedStatement stm = connection.prepareStatement(query);
+                try {
+                    stm.setBoolean(1, true);
+                    stm.setInt(2, groupId);
+                    stm.setBoolean(3, true);
+                    stm.setInt(4, creator);
+                    stm.executeUpdate();
+                } finally {
+                    stm.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return groupId;
     }
 
     public void addGroupFiles(Group group, Enumeration files, MultipartRequest multipart) {
