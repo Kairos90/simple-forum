@@ -8,6 +8,7 @@ package db;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import javax.servlet.ServletContext;
 
 /**
  *
@@ -44,5 +45,11 @@ public class Group {
     public boolean hasFileNamed(HttpServletRequest request, String name) {
         String groupFilesPath = getRealFilesPath(request);
         return new File(groupFilesPath + File.separator + name).exists();
+    }
+    
+    //create the directory where to store the uploaded files
+    public static boolean createFilesDirecotry(ServletContext context, int groupId) {
+        String filesPath = context.getRealPath("/static/files");
+        return new File(filesPath + File.separator + groupId).mkdir();
     }
 }

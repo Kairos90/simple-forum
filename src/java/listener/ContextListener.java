@@ -7,6 +7,7 @@
 package listener;
 
 import db.DBManager;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +28,11 @@ public class ContextListener implements ServletContextListener{
         } catch (SQLException ex) {
             Logger.getLogger(ContextListener.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        //Creates the directory where to store the uploaded files
+        String contextPath = sce.getServletContext().getRealPath("/static");
+        File groupFilesDirectory = new File(contextPath + File.separator + "files");
+        groupFilesDirectory.mkdir();
     }
 
     @Override

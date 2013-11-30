@@ -52,7 +52,6 @@ public class GroupManager extends HttpServlet {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -181,6 +180,7 @@ public class GroupManager extends HttpServlet {
         String newName = request.getParameter("change_group_name");
         if(groupToEdit == null) {
             groupId = manager.createGroup(logged.getId(), newName);
+            Group.createFilesDirecotry(request.getServletContext(), groupId);
         } else {
             groupId = groupToEdit.getId();
         }

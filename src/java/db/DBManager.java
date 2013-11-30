@@ -463,7 +463,6 @@ public class DBManager implements Serializable {
             } catch (SQLException ex) {
                 Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
         return groupId;
     }

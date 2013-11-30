@@ -48,7 +48,7 @@ public class PdfGenerator extends HttpServlet {
             Group groupToReport = manager.getGroup(Integer.parseInt(request.getParameter("id")));
             LinkedList<User> groupUsers = manager.getUsersForGroupAndVisible(groupToReport.getCreator());
             Iterator<User> groupIterator = groupUsers.iterator();
-            LinkedList<Image> avatars = new LinkedList<Image>();
+            LinkedList<Image> avatars = new LinkedList<>();
             try {
                 while(groupIterator.hasNext()) {
                     avatars.addLast(Image.getInstance(groupIterator.next().getAvatar(request)));
