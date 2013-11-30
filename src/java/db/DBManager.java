@@ -467,7 +467,8 @@ public class DBManager implements Serializable {
         return groupId;
     }
 
-    public void addGroupFiles(Group group, Enumeration files, MultipartRequest multipart) {
+    public void addGroupFiles(Group group, MultipartRequest multipart) {
+        Enumeration files = multipart.getFileNames();
         try {
             String query = "INSET INTO \"file\"(post_id, file_name, flie_mime, file_size) VALUES(?, ?, ?, ?)";
             PreparedStatement stm = connection.prepareStatement(query);

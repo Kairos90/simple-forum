@@ -46,7 +46,7 @@ public class PdfGenerator extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
             Group groupToReport = manager.getGroup(Integer.parseInt(request.getParameter("id")));
-            LinkedList<User> groupUsers = manager.getUsersForGroupAndVisible(groupToReport.getCreator());
+            LinkedList<User> groupUsers = manager.getUsersForGroupAndVisible(groupToReport.getId());
             Iterator<User> groupIterator = groupUsers.iterator();
             LinkedList<Image> avatars = new LinkedList<>();
             try {

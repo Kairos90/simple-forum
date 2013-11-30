@@ -87,7 +87,7 @@ public class Post extends HttpServlet {
             try {
                 MultipartRequest multipart = new MultipartRequest(request, group.getRealFilesPath(request), 10 * 1024 * 1024, "UTF-8", new DefaultFileRenamePolicy());
                 
-                Enumeration files = multipart.getFileNames();
+                dbmanager.addGroupFiles(group, multipart);
                 
             } catch (IOException ex) {
                 this.getServletContext().log(ex, "Problems during file upload.");
