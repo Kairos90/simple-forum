@@ -38,7 +38,7 @@ public class Post extends HttpServlet {
             + "                </li>\n"
             + "                <li data-role=\"fieldcontain\" id=\"file-li\">\n"
             + "                    <label for=\"file\">File:</label>\n"
-            + "                    <input type=\"file\" id=\"file\" name=\"file\">\n"
+            + "                    <input type=\"file\" id=\"file\" name=\"file1\">\n"
             + "                </li>\n"
             + "            </ul>\n"
             + "            <button data-inline=\"true\" data-theme=\"b\" type=\"submit\">Post it</button>\n"
