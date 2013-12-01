@@ -223,11 +223,9 @@ public class DBManager implements Serializable {
         LinkedList<Group> u = new LinkedList<>();
         try {
             String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND group_accepted = FALSE";
-            PreparedStatement stm = connection.prepareStatement(query);
-            try {
+            try (PreparedStatement stm = connection.prepareStatement(query)) {
                 stm.setInt(1, user.getId());
-                ResultSet res = stm.executeQuery();
-                try {
+                try (ResultSet res = stm.executeQuery()) {
                     while (res.next()) {
                         u.add(
                                 new Group(
@@ -237,10 +235,8 @@ public class DBManager implements Serializable {
                                 )
                         );
                     }
-                } finally {
                     res.close();
                 }
-            } finally {
                 stm.close();
             }
         } catch (SQLException ex) {
@@ -482,12 +478,12 @@ public class DBManager implements Serializable {
                     String type = multipart.getContentType(name);
                     System.out.println(type);
                     File f = multipart.getFile(name);
-                    if(f != null) {
+                    if (f != null) {
                         stm.setInt(1, group.getId());
                         stm.setString(2, filename);
                         stm.setString(3, type);
                         stm.setLong(4, f.length());
-                        stm.executeQuery();
+                        stm.executeUpdate();
                     }
                 }
             } finally {
@@ -532,16 +528,16 @@ public class DBManager implements Serializable {
                                 stm.executeUpdate();
                                 break;
                         }
-                        }catch (Exception e) {
+                    } catch (NumberFormatException | SQLException e) {
                         Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, e);
                     }
 
-                    }
-                }finally {
+                }
+            } finally {
                 stm.close();
             }
-            } catch (SQLException ex) {
-                Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+}

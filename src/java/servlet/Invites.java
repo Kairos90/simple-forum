@@ -26,17 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Invites extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     public static final String INVITES_TITLE = "My Invites";
-    private static final String INVITES_HEAD_TABLE = "<form action=\"/forum/invites\" data-ajax=\"false\" method=\"POST\">\n"
+    private static final String INVITES_HEAD_TABLE = "<form action=\"/forum/invites\" data-ajax=\"false\" method=\"post\">\n"
             + "<table data-role=\"table\" id=\"user-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
             + "         <thead>\n"
             + "           <tr class=\"ui-bar-d\">\n"
@@ -52,13 +43,6 @@ public class Invites extends HttpServlet {
             + "   <input type=\"submit\" value=\"submit\" data-inline=\"true\">"
             + "</form>";
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-    }
-
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -70,8 +54,7 @@ public class Invites extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-
+        response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
         User logged = (User) request.getSession().getAttribute("user");
@@ -102,19 +85,17 @@ public class Invites extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
         DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
         User logged = (User) request.getSession().getAttribute("user");
 
         Map<String, String[]> map = request.getParameterMap();
 
-          try {
-                manager.acceptInvitesFromGroups(map, logged.getId());
-            } catch (Exception e) {
-                Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, e);
-            }
-        
-        
+        try {
+            manager.acceptInvitesFromGroups(map, logged.getId());
+        } catch (Exception e) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, e);
+        }
+
         response.sendRedirect("/forum");
 
     }
