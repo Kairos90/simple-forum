@@ -52,7 +52,8 @@
         <servlet-class>servlet.AvatarUploadPage</servlet-class>
         <multipart-config>
             <location>/tmp</location>
-            <max-file-size>1048576</max-file-size> <!-- 1MB -->
+            <max-file-size>1048576</max-file-size>
+            <!-- 1MB -->
             <max-request-size>1148576</max-request-size>
             <file-size-threshold>1048576</file-size-threshold>
         </multipart-config>
@@ -60,6 +61,10 @@
     <servlet>
         <servlet-name>PdfGenerator</servlet-name>
         <servlet-class>servlet.PdfGenerator</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Invites</servlet-name>
+        <servlet-class>servlet.Invites</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
@@ -92,6 +97,10 @@
     <servlet-mapping>
         <servlet-name>PdfGenerator</servlet-name>
         <url-pattern>/forum/pdf-generator</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Invites</servlet-name>
+        <url-pattern>/forum/invites</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

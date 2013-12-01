@@ -122,6 +122,9 @@ public class GroupManager extends HttpServlet {
         Iterator<User> i = visibleFollowinUsers.iterator();
         while (i.hasNext()) {
             User userConsidered = i.next();
+            if (userConsidered.getId() == logged.getId()){
+                continue;
+            }
             userContentBodyTable += "<tr>\n"
                     + "             <td>" + userConsidered.getName() + "</td>\n" //User Name
                     + "             <td> <input name=\"" + userConsidered.getId() + "\" value=\"member\" type=\"checkbox\" checked disabled> </td>\n" //Group Member 
@@ -148,6 +151,9 @@ public class GroupManager extends HttpServlet {
         Iterator<User> o = otherUsers.iterator();
         while (o.hasNext()) {
             User userConsidered = o.next();
+            if (userConsidered.getId() == logged.getId()){
+                continue;
+            }
             userContentBodyTable += "<tr>\n"
                     + "             <td>" + userConsidered.getName() + "</td>\n" //User Name
                     + "             <td> <input name=\"" + userConsidered.getId() + "\" value=\"member\" type=\"checkbox\"> </td>\n" //Group Member 

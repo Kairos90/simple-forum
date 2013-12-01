@@ -222,7 +222,7 @@ public class DBManager implements Serializable {
     public LinkedList<Group> getInvites(User user) {
         LinkedList<Group> u = new LinkedList<>();
         try {
-            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND group_accepted = 0";
+            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND group_accepted = FALSE";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, user.getId());
@@ -437,10 +437,11 @@ public class DBManager implements Serializable {
                 stm.setString(2, name);
                 stm.executeUpdate();
                 ResultSet rs = stm.getGeneratedKeys();
-                if(rs != null)
+                if (rs != null) {
                     if (rs.next()) {
                         groupId = rs.getInt(1);
                     }
+                }
             } finally {
                 stm.close();
             }
@@ -492,7 +493,7 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void addPost(int groupId, int userId, String text) {
         try {
             String query = "INSERT INTO \"post\"(user_id, group_id, post_text) VALUES(?, ?, ?)";
@@ -509,4 +510,34 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-}
+
+    public void acceptInvitesFromGroups(Map<String, String[]> m, int user) {
+        try {
+            String query = "UPDATE \"user_group\" SET group_accepted = TRUE WHERE group_id = ? AND user_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            try {
+                for (Map.Entry<String, String[]> entry : m.entrySet()) {
+                    String key = entry.getKey();
+                    try {
+                        int groupId = Integer.parseInt(key);
+                        String[] value = entry.getValue();
+                        switch (value[0]) {
+                            case "accepted":
+                                stm.setInt(1, groupId);
+                                stm.setInt(2, user);
+                                stm.executeUpdate();
+                                break;
+                        }
+                        }catch (Exception e) {
+                        Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, e);
+                    }
+
+                    }
+                }finally {
+                stm.close();
+            }
+            } catch (SQLException ex) {
+                Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
