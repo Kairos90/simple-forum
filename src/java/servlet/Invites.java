@@ -63,9 +63,10 @@ public class Invites extends HttpServlet {
         Iterator<Group> i = invitesToGroup.iterator();
         while (i.hasNext()) {
             Group nextGroup = i.next();
+            User creator = manager.getUser(nextGroup.getCreator());
             InvitesBodyTable += "<tr>\n"
                     + "             <td>" + nextGroup.getName() + "</td>\n" //Group Name
-                    + "             <td>" + nextGroup.getCreator() + "</td>\n" //Group Creator 
+                    + "             <td>" + creator.getName() + "</td>\n" //Group Creator 
                     + "             <td> <input name=\"" + nextGroup.getId() + "\" value=\"accepted\" type=\"checkbox\"> </td>\n" //Accept Group
                     + "           </tr>\n";
         }

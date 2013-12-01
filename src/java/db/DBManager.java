@@ -190,7 +190,6 @@ public class DBManager implements Serializable {
 
     public Group getGroup(int groupId) {
         Group target = null;
-
         try {
             String query = "SELECT * FROM \"group\" WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
@@ -540,4 +539,31 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public User getUser(int userId){
+        User user = null;
+        try {
+            String query = "SELECT * FROM \"user\" WHERE user_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, userId);
+                ResultSet res = stm.executeQuery();
+                try {
+                    if (res.next()) {
+                        user = new User(
+                                res.getInt("user_id"),
+                                res.getString("user_name")
+                        );
+                    }
+                } finally {
+                    res.close();
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    return user;
+}
 }
