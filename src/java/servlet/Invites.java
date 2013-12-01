@@ -36,7 +36,6 @@ public class Invites extends HttpServlet {
             + "              <th>Accept</th>\n"
             + "           </tr>\n"
             + "         </thead>\n";
-    String InvitesBodyTable = "<tbody>\n";
 
     String InvitesBodyTableEnd = "</tbody>\n"
             + "       </table>\n"
@@ -59,6 +58,7 @@ public class Invites extends HttpServlet {
         DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
         User logged = (User) request.getSession().getAttribute("user");
         String userContent;
+        String InvitesBodyTable = "<tbody>\n";
         LinkedList<Group> invitesToGroup = manager.getInvites(logged);
         Iterator<Group> i = invitesToGroup.iterator();
         while (i.hasNext()) {
