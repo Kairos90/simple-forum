@@ -492,4 +492,21 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void addPost(int groupId, int userId, String text) {
+        try {
+            String query = "INSERT INTO \"post\"(user_id, group_id, post_text) VALUES(?, ?, ?)";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, userId);
+                stm.setInt(2, groupId);
+                stm.setString(3, text);
+                stm.executeUpdate();
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
