@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "Post", urlPatterns = {"/forum/post"})
 public class Post extends HttpServlet {
 
-    private static final String FORM_HTML_TOP =
-              "<form action=\"/forum/post\" data-ajax=\"false\" method=\"post\" enctype=\"multipart/form-data\">\n"
+    private static final String FORM_HTML
+            = "        <form action=\"/forum/post?id=%\" data-ajax=\"false\" method=\"post\" enctype=\"multipart/form-data\">\n"
             + "            <ul data-role=\"listview\" data-inset=\"true\">\n"
             + "                <li data-role=\"fieldcontain\">\n"
             + "                    <label for=\"text\">Post text:</label>\n"
@@ -41,9 +41,8 @@ public class Post extends HttpServlet {
             + "                    <input type=\"file\" id=\"file\" name=\"file\">\n"
             + "                </li>\n"
             + "            </ul>\n"
-            + "            <button data-inline=\"true\" data-theme=\"b\" type=\"submit\">Post it</button>\n";
-    private static final String FORM_HTML_BOTTOM =
-              "        </form>";
+            + "            <button data-inline=\"true\" data-theme=\"b\" type=\"submit\">Post it</button>\n"
+            + "        </form>";
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -65,11 +64,10 @@ public class Post extends HttpServlet {
             HTML.print404(out);
         } else {
             String error = "";
-            if(request.getParameter("error") != null) {
+            if (request.getParameter("error") != null) {
                 error += "<h2>Please insert some text</h2>";
             }
-            String groupIdInput = "<input type=\"hidden\" name=\"id\" value=\"" + groupId + "\">";
-            HTML.printPage(out, "Write your post", "forum/group?id=" + groupId, error + FORM_HTML_TOP + groupIdInput + FORM_HTML_BOTTOM);
+            HTML.printPage(out, "Write your post", "forum/group?id=" + groupId, error + FORM_HTML.replaceFirst("%", groupId + ""));
         }
     }
 
@@ -90,24 +88,18 @@ public class Post extends HttpServlet {
         String groupIdParam = request.getParameter("id");
         int groupId = groupIdParam != null ? Integer.parseInt(groupIdParam) : 0;
         Group group = dbmanager.getGroup(groupId);
-        String text = request.getParameter("text");
         if (group == null) {
             HTML.print404(out);
-        } else if(text.length() < 2) {
-            response.sendRedirect("/forum/post?error=error&id=" + groupId);
         } else {
-            try {
-                MultipartRequest multipart = new MultipartRequest(request, group.getRealFilesPath(request), 10 * 1024 * 1024, "UTF-8", new DefaultFileRenamePolicy());
-                
-                dbmanager.addGroupFiles(group, multipart);
-                dbmanager.addPost(groupId, user.getId(), text);
-            } catch (IOException ex) {
-                this.getServletContext().log(ex, "Problems during file upload.");
-            }
+            MultipartRequest multipart = new MultipartRequest(request, group.getFilesRealPath(request), 10 * 1024 * 1024, "UTF-8", new DefaultFileRenamePolicy());
+            String text = multipart.getParameter("text");
+
+            dbmanager.addGroupFiles(group, multipart);
+            dbmanager.addPost(groupId, user.getId(), text);
             response.sendRedirect("/forum/group?id=" + groupId);
         }
     }
-    
+
     /**
      * Returns a short description of the servlet.
      *

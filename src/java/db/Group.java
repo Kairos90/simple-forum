@@ -38,12 +38,12 @@ public class Group {
         return creator;
     }
     
-    public String getRealFilesPath(HttpServletRequest request) {
+    public String getFilesRealPath(HttpServletRequest request) {
         return request.getServletContext().getRealPath("/static/files/" + id);
     }
     
     public boolean hasFileNamed(HttpServletRequest request, String name) {
-        String groupFilesPath = getRealFilesPath(request);
+        String groupFilesPath = getFilesRealPath(request);
         return new File(groupFilesPath + File.separator + name).exists();
     }
     

@@ -469,22 +469,26 @@ public class DBManager implements Serializable {
     }
 
     public void addGroupFiles(Group group, MultipartRequest multipart) {
-        Enumeration files = multipart.getFileNames();
+        Enumeration<String> files = multipart.getFileNames();
         try {
-            String query = "INSET INTO \"file\"(post_id, file_name, flie_mime, file_size) VALUES(?, ?, ?, ?)";
+            String query = "INSERT INTO \"file\"(post_id, file_name, file_mime, file_size) VALUES(?, ?, ?, ?)";
             PreparedStatement stm = connection.prepareStatement(query);
-            stm.setInt(1, group.getId());
             try {
                 while (files.hasMoreElements()) {
-                    String name = (String) files.nextElement();
+                    String name = files.nextElement();
+                    System.out.println(name);
                     String filename = multipart.getFilesystemName(name);
+                    System.out.println(filename);
                     String type = multipart.getContentType(name);
+                    System.out.println(type);
                     File f = multipart.getFile(name);
-
-                    stm.setString(2, filename);
-                    stm.setString(3, type);
-                    stm.setLong(4, f.length());
-                    stm.executeQuery();
+                    if(f != null) {
+                        stm.setInt(1, group.getId());
+                        stm.setString(2, filename);
+                        stm.setString(3, type);
+                        stm.setLong(4, f.length());
+                        stm.executeQuery();
+                    }
                 }
             } finally {
                 stm.close();
