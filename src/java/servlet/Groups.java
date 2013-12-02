@@ -70,8 +70,7 @@ public class Groups extends HttpServlet {
             //SETTING TABLE DEPENDING ON OWN PROPERTY
             if (groupConsidering.getCreator() == logged.getId()) {
                 groupsContentBodyTable += "<tr>\n"
-                        + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n"      //Group Name
-                        + "             <td></td>\n";                                                                                       //News
+                        + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n";                                                                                       //News
                 if (manager.getLatestPost(groupConsidering) != null) {
                     groupsContentBodyTable += "<td>" + manager.getLatestPost(groupConsidering) + "</td>\n";                                 //Latest Post
                 } else {
