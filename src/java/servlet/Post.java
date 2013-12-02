@@ -67,7 +67,7 @@ public class Post extends HttpServlet {
             if (request.getParameter("error") != null) {
                 error += "<h2>Please insert some text</h2>";
             }
-            HTML.printPage(out, "Write your post", "forum/group?id=" + groupId, error + FORM_HTML.replaceFirst("%", groupId + ""));
+            HTML.printPage(out, "Write your post", "/forum/group?id=" + groupId, error + FORM_HTML.replaceFirst("%", groupId + ""));
         }
     }
 

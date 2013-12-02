@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -111,13 +112,16 @@ public class DBManager implements Serializable {
                 stm.setInt(1, g.getId());
                 ResultSet res = stm.executeQuery();
                 try {
+                    HashMap<String, GroupFile> files = getGroupFiles(g);
                     while (res.next()) {
                         p.add(
                                 new Post(
                                         res.getInt("post_id"),
                                         res.getString("post_text"),
                                         res.getDate("post_date"),
-                                        new User(res.getInt("user_id"), res.getString("user_name"))
+                                        new User(res.getInt("user_id"), res.getString("user_name")),
+                                        files,
+                                        g
                                 )
                         );
                     }
@@ -133,8 +137,8 @@ public class DBManager implements Serializable {
         return p;
     }
 
-    public LinkedList<GroupFile> getPostFiles(Post p) {
-        LinkedList<GroupFile> f = new LinkedList<>();
+    public HashMap<String, GroupFile> getPostFiles(Post p) {
+        HashMap<String, GroupFile> f = new HashMap<>();
         try {
             String query = "SELECT * FROM \"file\" NATURAL JOIN \"post\" WHERE post_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
@@ -143,7 +147,39 @@ public class DBManager implements Serializable {
                 ResultSet res = stm.executeQuery();
                 try {
                     while (res.next()) {
-                        f.add(
+                        f.put(
+                                res.getString("file_name"),
+                                new GroupFile(
+                                        res.getString("file_name"),
+                                        res.getString("file_mime"),
+                                        res.getInt("file_size")
+                                )
+                        );
+                    }
+                } finally {
+                    res.close();
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return f;
+    }
+    
+    public HashMap<String, GroupFile> getGroupFiles(Group g) {
+        HashMap<String, GroupFile> f = new HashMap<>();
+        try {
+            String query = "SELECT * FROM \"file\" NATURAL JOIN \"post\" NATURAL JOIN \"group\" WHERE group_id = ?";
+            PreparedStatement stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, g.getId());
+                ResultSet res = stm.executeQuery();
+                try {
+                    while (res.next()) {
+                        f.put(
+                                res.getString("file_name"),
                                 new GroupFile(
                                         res.getString("file_name"),
                                         res.getString("file_mime"),
