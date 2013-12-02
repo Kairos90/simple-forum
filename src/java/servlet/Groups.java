@@ -32,7 +32,6 @@ public class Groups extends HttpServlet {
             + "         <thead>\n"
             + "           <tr class=\"ui-bar-d\">\n"
             + "             <th>Group Name</th>\n"
-            + "             <th>News</th>\n"
             + "             <th>Latest Post</th>\n"
             + "             <th><abbr title=\"Rotten Tomato Rating\">Modify</abbr></th>\n"
             + "             <th>Summerize</th>\n"
