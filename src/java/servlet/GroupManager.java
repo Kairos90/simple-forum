@@ -41,7 +41,7 @@ public class GroupManager extends HttpServlet {
             + "         <thead>\n"
             + "           <tr class=\"ui-bar-d\">\n"
             + "             <th>Name</th>\n"
-            + "             <th>Invited</th>\n"
+            + "             <th>Invite</th>\n"
             + "              <th>Visible</th>\n"
             + "              <th>Invisible</th>\n"
             + "           </tr>\n"
