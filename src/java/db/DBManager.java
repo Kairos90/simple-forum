@@ -539,8 +539,8 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public User getUser(int userId){
+
+    public User getUser(int userId) {
         User user = null;
         try {
             String query = "SELECT * FROM \"user\" WHERE user_id = ?";
@@ -564,6 +564,22 @@ public class DBManager implements Serializable {
         } catch (SQLException ex) {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-    return user;
-}
+        return user;
+    }
+
+    public boolean checkIfUserCanAccessGroup(int userId, int groupId) {
+        boolean x = false;
+        try {
+            String query = "SELECT * FROM \"user_group\" WHERE user_id = ? AND group_id = ? AND visible = FALSE";
+            try (PreparedStatement stm = connection.prepareStatement(query)) {
+                stm.setInt(1, userId);
+                stm.setInt(2, groupId);
+                ResultSet res = stm.executeQuery();
+                x = res.next();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return x;
+    }
 }

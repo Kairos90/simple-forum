@@ -78,7 +78,7 @@ public class Groups extends HttpServlet {
             } else {
                 groupsContentBodyTable += "<tr>\n"
                 + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
-                + "             <td>jadjsdvjksnkjv</td>\n"                     //News
+                + "             <td> ciao</td>\n"                     //News
                 + "             <td><a href=\"/forum/group?id=" + groupConsidering.getId() + "\">" + manager.getLatestPost(groupConsidering) + "</a></td>\n"             //Latest Post
                 + "             <td></td>\n"                                        //Modifica
                 + "             <td></td>\n"                                        //Resoconto
