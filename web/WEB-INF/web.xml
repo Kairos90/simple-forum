@@ -4,6 +4,7 @@
         <description>contextListener</description>
         <listener-class>listener.ContextListener</listener-class>
     </listener>
+    
     <filter>
         <filter-name>
             LoginFilter
@@ -12,6 +13,7 @@
             filter.LoginFilter
         </filter-class>
     </filter>
+    
     <filter>
         <filter-name>
             GroupManagerFilter
@@ -20,6 +22,7 @@
             filter.GroupManagerFilter
         </filter-class>
     </filter>
+    
     <filter>
         <filter-name>
             GroupFilter
@@ -28,6 +31,16 @@
             filter.GroupFilter
         </filter-class>
     </filter>
+    
+    <filter>
+        <filter-name>
+            GroupFilesFilter
+        </filter-name>
+        <filter-class>
+            filter.GroupFilesFilter
+        </filter-class>
+    </filter>
+    
     <filter-mapping>
         <filter-name>
             LoginFilter
@@ -36,6 +49,7 @@
             /forum/*
         </url-pattern>
     </filter-mapping>
+    
     <filter-mapping>
         <filter-name>
             GroupManagerFilter
@@ -44,6 +58,7 @@
             /forum/create
         </url-pattern>
     </filter-mapping>
+    
     <filter-mapping>
         <filter-name>
             GroupFilter
@@ -52,6 +67,16 @@
             /forum/post
         </url-pattern>
     </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>
+            GroupFilesFilter
+        </filter-name>
+        <url-pattern>
+            /static/files/*
+        </url-pattern>
+    </filter-mapping>
+    
     <welcome-file-list>
         <welcome-file>login</welcome-file>
     </welcome-file-list>
