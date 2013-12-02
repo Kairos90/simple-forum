@@ -28,13 +28,22 @@ public class Groups extends HttpServlet {
 
     // TITLE OF GROUPS PAGE & CONTENT OF GROUPS PAGE
     private static final String GROUPS_TITLE = "My Groups";
-    private static final String GROUPS_CONTENT_HEAD_TABLE = "<table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
+    private static final String GROUPS_CONTENT_HEAD_TABLE_AS_OWNER = "<table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
             + "         <thead>\n"
             + "           <tr class=\"ui-bar-d\">\n"
             + "             <th>Group Name</th>\n"
             + "             <th>News</th>\n"
             + "             <th>Latest Post</th>\n"
             + "             <th><abbr title=\"Rotten Tomato Rating\">Modify</abbr></th>\n"
+            + "             <th>Summerize</th>\n"
+            + "           </tr>\n"
+            + "         </thead>\n";
+    private static final String GROUPS_CONTENT_HEAD_TABLE_AS_USER = "<table data-role=\"table\" id=\"groups-table\" class=\"ui-dbody-d table-stripe ui-responsive\">\n"
+            + "         <thead>\n"
+            + "           <tr class=\"ui-bar-d\">\n"
+            + "             <th>Group Name</th>\n"
+            + "             <th>News</th>\n"
+            + "             <th>Latest Post</th>\n"
             + "             <th>Summerize</th>\n"
             + "           </tr>\n"
             + "         </thead>\n";
@@ -66,32 +75,30 @@ public class Groups extends HttpServlet {
         
         while (i.hasNext()) {
             Group groupConsidering = i.next();
+        int groupId = groupConsidering.getId();
             //SETTING TABLE DEPENDING ON OWN PROPERTY
             if (groupConsidering.getCreator() == logged.getId()) {
                 groupsContentBodyTable += "<tr>\n"
-                + "             <th><a href=\"/forum/group?id=" + groupConsidering.getId() + "\">" + groupConsidering.getName() + "</a></th>\n"                          //Group Name
+                + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n"                          //Group Name
                 + "             <td></td>\n"                     //News
                 + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"             //Latest Post
-                + "             <td></td>\n"                                                            //Modifica
-                + "             <td></td>\n"                                                            //Resoconto
+                + "             <td><a href=\"/forum/create?id=" + groupId + "\">Manage</a></td>\n" //Modifica
+                + "             <td><a target=\"_blank\" href=\"/forum/pdf-generator?id=" + groupId + "\">Report</a></td>\n"                                                            //Resoconto
                 + "           </tr>\n";
+                groupsContent = GROUPS_CONTENT_HEAD_TABLE_AS_OWNER + groupsContentBodyTable + groupsContentBodyTableEnd;
             } else {
                 groupsContentBodyTable += "<tr>\n"
-                + "             <th>" + groupConsidering.getName() + "</th>\n"                          //Group Name
-                + "             <td> ciao</td>\n"                     //News
-                + "             <td><a href=\"/forum/group?id=" + groupConsidering.getId() + "\">" + manager.getLatestPost(groupConsidering) + "</a></td>\n"             //Latest Post
-                + "             <td></td>\n"                                        //Modifica
-                + "             <td></td>\n"                                        //Resoconto
+                + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n"                          //Group Name
+                + "             <td></td>\n"                     //News
+                + "             <td>" + manager.getLatestPost(groupConsidering) + "</td>\n"         //Latest Post
+                + "             <td><a target=\"_blank\" href=\"/forum/pdf-generator?id=" + groupId + "\">Report</a></td>\n"                                     //Resoconto
                 + "           </tr>\n";
+                groupsContent = GROUPS_CONTENT_HEAD_TABLE_AS_USER + groupsContentBodyTable + groupsContentBodyTableEnd;
             }
         }
 
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-
-            groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
             HTML.printPage(out, GROUPS_TITLE, "/forum", groupsContent);
-
         }
     }
 

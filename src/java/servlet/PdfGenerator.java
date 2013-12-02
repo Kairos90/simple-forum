@@ -5,6 +5,7 @@
  */
 package servlet;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -85,9 +86,14 @@ public class PdfGenerator extends HttpServlet {
                 User u = groupIterator.next();
                 String userName = u.getName();
                 PdfPCell avatarCell = new PdfPCell(Image.getInstance(context + u.getAvatar(request)));
+                avatarCell.setBorder(0);
+                avatarCell.setPaddingBottom(10);
                 avatarCell.setColspan(1);
                 PdfPCell userNameCell = new PdfPCell(new Phrase(userName));
                 userNameCell.setColspan(4);
+                userNameCell.setBorder(0);
+                userNameCell.setPaddingBottom(10);
+                userNameCell.setPaddingLeft(10);
                 usersTable.addCell(avatarCell);
                 usersTable.addCell(userNameCell);
             }
