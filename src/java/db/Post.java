@@ -24,21 +24,21 @@ public class Post {
     public Post(int id, String text, Date date, User creator, HashMap<String, GroupFile> groupFiles, Group group) {
         text = text.replaceAll("<", "&lt;");
         text = text.replaceAll(">", "&gt;");
-        /*
+        
         Pattern p = Pattern.compile("\\$\\$([^\\s]+)\\$\\$");
         Matcher m = p.matcher(text);
         String filesPath = "/static/files/" + group.getId() + "/";
         while(m.find()) {
-            String g = m.group();
+            String g = m.group(1);
             String rep;
             if(groupFiles.get(g) != null) {
                 rep = "<a href=\"" + filesPath + g + "\">" + g + "</a>";
             } else {
                 rep = "<a href=\"" + g + "\">" + g + "</a>";
             }
-            m.replaceAll(rep);
+            m.replaceFirst(rep);
         }
-        */
+        
         this.id = id;
         this.text = text;
         this.date = date;

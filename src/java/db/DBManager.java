@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -199,9 +200,8 @@ public class DBManager implements Serializable {
         return f;
     }
 
-    public Date getLatestPost(Group group) {
-        Date date = null;
-
+    public Timestamp getLatestPost(Group group) {
+        Timestamp date = null;
         try {
             String query = "SELECT MAX(post_date) AS max_date FROM \"post\" WHERE group_id = ?";
             PreparedStatement stm = connection.prepareStatement(query);
@@ -211,7 +211,7 @@ public class DBManager implements Serializable {
 
                 try {
                     res.next();
-                    date = res.getDate("max_date");
+                    date = res.getTimestamp("max_date");
                 } finally {
                     res.close();
                 }
