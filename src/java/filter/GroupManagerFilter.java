@@ -37,9 +37,11 @@ public class GroupManagerFilter implements Filter {
         String idParam = request.getParameter("id");
         if (idParam != null && !"0".equals(idParam)) {
             int group_id = Integer.parseInt(idParam);
-            
+
             Group selectedGroup = manager.getGroup(group_id);
-            if (user.getId() == selectedGroup.getCreator()) {
+            if (selectedGroup == null) {
+                ((HttpServletResponse) response).sendRedirect("/forum");
+            } else if (user.getId() == selectedGroup.getCreator()) {
                 chain.doFilter(request, response);
             } else {
                 ((HttpServletResponse) response).sendRedirect("/forum");

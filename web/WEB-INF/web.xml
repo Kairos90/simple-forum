@@ -61,6 +61,15 @@
     
     <filter-mapping>
         <filter-name>
+            GroupManagerFilter
+        </filter-name>
+        <url-pattern>
+            /forum/pdf-generator
+        </url-pattern>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>
             GroupFilter
         </filter-name>
         <url-pattern>
