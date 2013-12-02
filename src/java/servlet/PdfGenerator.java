@@ -3,19 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package servlet;
 
-import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import db.DBManager;
 import db.Group;
 import db.User;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javax.servlet.ServletException;
@@ -42,36 +49,75 @@ public class PdfGenerator extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        Document report = new Document();
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter.getInstance(report, baos);
+
             DBManager manager = (DBManager) getServletContext().getAttribute("dbmanager");
             Group groupToReport = manager.getGroup(Integer.parseInt(request.getParameter("id")));
             LinkedList<User> groupUsers = manager.getUsersForGroupAndVisible(groupToReport.getId());
+            Timestamp lastPosted = manager.getLatestPost(groupToReport);
+            int numberOfPosts = manager.getGroupPosts(groupToReport).size();
+            String context = request.getServletContext().getRealPath("/");
             Iterator<User> groupIterator = groupUsers.iterator();
-            LinkedList<Image> avatars = new LinkedList<>();
-            try {
-                while(groupIterator.hasNext()) {
-                    avatars.addLast(Image.getInstance(groupIterator.next().getAvatar(request)));
-                }
-            } catch (BadElementException bex) {
-                // EXCEPTION OCCURS LOADING AVATAR
-            }
-            
-            Document report = new Document();
-            try {
-            PdfWriter.getInstance(report, response.getOutputStream());
+
             report.open();
             // INSERTING DOCUMENT CONTENT AREA
-            } catch (DocumentException ex) {
-               // EXCEPTION OCCURS GENERATIN PDF DOCUMENT
-            } finally {
-            
-            report.close();
+            Font title = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 24);
+            Font text = FontFactory.getFont(FontFactory.HELVETICA, 12);
+            Paragraph documentHead = new Paragraph(groupToReport.getName(), title);
+            Paragraph newLine = new Paragraph(Chunk.NEWLINE);
+            Paragraph latestPost = new Paragraph("Latest post inserted on: " + lastPosted, text);
+            Paragraph postsNumberToReport = new Paragraph("Number of posts: " + numberOfPosts, text);
+
+            //LAYOUT AND FINAL PARAGRAPH EDITING AREA
+            report.add(documentHead);
+            report.add(newLine);
+            report.add(postsNumberToReport);
+            report.add(newLine);
+            report.add(latestPost);
+            report.add(newLine);
+            PdfPTable usersTable = new PdfPTable(5);
+
+            // LOOP FOR SETTING TABLE
+            while (groupIterator.hasNext()) {
+                User u = groupIterator.next();
+                String userName = u.getName();
+                PdfPCell avatarCell = new PdfPCell(Image.getInstance(context + u.getAvatar(request)));
+                avatarCell.setColspan(1);
+                PdfPCell userNameCell = new PdfPCell(new Phrase(userName));
+                userNameCell.setColspan(4);
+                usersTable.addCell(avatarCell);
+                usersTable.addCell(userNameCell);
             }
+            usersTable.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
+            report.add(usersTable);
+
+            report.close();
+
+            // setting some response headers
+            response.setHeader("Expires", "0");
+            response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+            response.setHeader("Pragma", "public");
+            // setting the content type
+            response.setContentType("application/pdf");
+            // the contentlength
+            response.setContentLength(baos.size());
+            System.out.println("ci sono");
+            try (OutputStream os = response.getOutputStream()) {
+                baos.writeTo(os);
+                os.flush();
+                os.close();
+            } catch (Exception e) {
+                throw new IOException(e.getMessage());
+            }
+        } catch (DocumentException e) {
+            throw new IOException(e.getMessage());
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
