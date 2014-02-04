@@ -6,6 +6,7 @@
 package servlet;
 
 import db.DBManager;
+import db.Group;
 import db.User;
 import db.Post;
 import java.io.IOException;
@@ -88,11 +89,18 @@ public class Home extends HttpServlet {
             }
             upToDate += "</ul>";
         }
+        LinkedList<Group> invites = dbmanager.getInvites(user);
+        String newInv = null;
+        if (invites.size() > 0) {
+            newInv = "<div data-role=\"ui-body ui-body-d ui-corner-all\" data-inset=\"true\">You have " + invites.size() + " new invite/s</div>\n";
+        }
 
-        
-        HTML.printPage(out, "Forum home", welcomeMessage + CONTENT_HTML + upToDate);
+        if (newInv != null) {
+            HTML.printPage(out, "Forum home", welcomeMessage + CONTENT_HTML + newInv + upToDate);
+        } else {
+            HTML.printPage(out, "Forum home", welcomeMessage + CONTENT_HTML + upToDate);
+        }
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

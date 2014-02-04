@@ -645,7 +645,7 @@ public class DBManager implements Serializable {
     public boolean checkIfUserCanAccessGroup(int userId, int groupId) {
         boolean x = false;
         try {
-            String query = "SELECT * FROM \"user_group\" WHERE user_id = ? AND group_id = ? AND visible = TRUE";
+            String query = "SELECT * FROM \"user_group\" WHERE user_id = ? AND group_id = ? AND visible = TRUE AND group_accepted = TRUE";
             try (PreparedStatement stm = connection.prepareStatement(query)) {
                 stm.setInt(1, userId);
                 stm.setInt(2, groupId);
