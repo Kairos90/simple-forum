@@ -3,13 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package servlet;
 
+import db.DBManager;
 import db.User;
+import db.Post;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
+import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -21,9 +25,9 @@ import javax.servlet.http.HttpServletResponse;
  * @author paolo
  */
 public class Home extends HttpServlet {
-    
-    private static final String CONTENT_HTML =
-            "<ul data-role=\"listview\" data-inset=\"true\">"
+
+    private static final String CONTENT_HTML
+            = "<ul data-role=\"listview\" data-inset=\"true\">"
             + "<li><a href=\"forum/groups\">My groups</a></li>"
             + "<li><a href=\"forum/create\">Create group</a></li>"
             + "<li><a href=\"forum/invites\">Invites</a></li>"
@@ -47,25 +51,40 @@ public class Home extends HttpServlet {
         User user = (User) request.getSession().getAttribute("user");
         Cookie[] cookies = request.getCookies();
         Date loginTime = null;
+        DBManager dbmanager = (DBManager) request.getServletContext().getAttribute("dbmanager");
         for (Cookie cookie : cookies) {
             if ("loginTime".equals(cookie.getName())) {
                 loginTime = new Date(Long.parseLong(cookie.getValue()));
                 break;
             }
         }
-        String welcomeMessage =
-                "<ul data-role=\"listview\" data-inset=\"true\">"
+        if (loginTime == null) {
+            loginTime = new Date();
+        }
+        String welcomeMessage
+                = "<ul data-role=\"listview\" data-inset=\"true\">"
                 + "<li><h1>"
                 + "Welcome " + user.getName()
                 + "</h1>";
-        if(loginTime != null) {
-            welcomeMessage +=
-                    "<p>"
-                    + "You logged in " + loginTime.toString()
+        if (loginTime != null) {
+            welcomeMessage
+                    += "<p>"
+                    + "You logged in " + new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(loginTime)
                     + "</p>";
         }
+        String upToDate = "<ul data-role=\"listview\" data-inset=\"true\">\n";
+        Date lastDate = (Date) request.getAttribute("lastTimeLogged");
+        LinkedList<Post> lastPosts = lastDate != null ? dbmanager.getPostsFromDate(lastDate, user) : null;
+        Iterator<Post> i = lastPosts.iterator();
+        while(i.hasNext()) {
+            Post considering = i.next();
+            upToDate += "<div class=\"ui-body ui-body-d ui-corner-all\"><li>" + considering.getGroup().getName() + "</li>"
+                    + "<li>" + considering.getDate() + "</li></div>\n";
+        }
+
+        upToDate += "</ul>";
         welcomeMessage += "</li></ul>";
-        HTML.printPage(out, "Forum home",  welcomeMessage + CONTENT_HTML);
+        HTML.printPage(out, "Forum home", welcomeMessage + CONTENT_HTML + upToDate);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

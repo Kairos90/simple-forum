@@ -7,10 +7,12 @@ package servlet;
 
 import db.DBManager;
 import db.Group;
+import db.GroupFile;
 import db.Post;
 import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javax.servlet.ServletException;
@@ -45,27 +47,39 @@ public class GroupPage extends HttpServlet {
             if (id == null) {
                 HTML.print404(out);
             } else {
-                String content = "";
                 int groupId = Integer.parseInt(id);
+                String content = "<div data-role=\"button\" data-inline=\"true\"><a href=\"/forum/post?id=" + groupId + "\">Add a Post</a></div>\n";
                 Group currentGroup = manager.getGroup(groupId);
                 LinkedList<Post> postOf = manager.getGroupPosts(currentGroup);
                 Iterator<Post> i = postOf.iterator();
-
-                while (i.hasNext()) {
-                    Post current = i.next();
-                    content += "<div class=\"ui-grid-a ui-responsive\">\n"
-                            + "            <div class=\"ui-block-a\" style=\"width: 20%\">\n"
-                            + "              <div>\n"
-                            + "                 <img style=\"max-width: 100%; height: auto\" src=\"" + current.getCreator().getAvatar(request) + "\">\n"
-                            + "              </div>\n"
-                            + "              <p>\n"
-                            + current.getCreator().getName() + "\n"
-                            + "              </p>\n"
-                            + "            </div>\n"
-                            + "            <div class=\"ui-block-b\" style=\"width: 80%\">\n"
-                            + current.getText() + "\n"
-                            + "            </div>\n"
-                            + "        </div>";
+                if (postOf.size() != 0) {
+                    while (i.hasNext()) {
+                        Post current = i.next();
+                        HashMap<String, GroupFile> postFile = manager.getPostFiles(current);
+                        Iterator<String> key = postFile.keySet().iterator();
+                        content += "<div class=\"ui-grid-a ui-responsive\">\n"
+                                + "            <div class=\"ui-block-a\" style=\"width: 20%\">\n"
+                                + "              <div>\n"
+                                + "                 <img style=\"max-width: 100%; height: auto\" src=\"" + current.getCreator().getAvatar(request) + "\">\n"
+                                + "              </div>\n"
+                                + "              <p>\n"
+                                + current.getCreator().getName() + "\n"
+                                + "              </p>\n"
+                                + "            </div>\n"
+                                + "            <div class=\"ui-block-b\" style=\"width: 80%\">\n"
+                                + current.getText() + "\n"
+                                + "            </div>\n"
+                                + "             <div class=\"ui-block-b\" style=\"width: 80%\">\n";
+                        while (key.hasNext()) {
+                            String keyUse = key.next();
+                            String filePath = "\\static\\files\\" + currentGroup.getId() + "\\";
+                            content += "<a target=\"_blank\" href=\"" + filePath + postFile.get(keyUse).getName() + "\">" + postFile.get(keyUse).getName() + "</a>\n";
+                        }
+                        content += "            </div>\n"
+                                + "        </div>";
+                    }
+                } else {
+                    content += "<div class=\"ui-body ui-body-d ui-corner-all\"><h2>There are no posts in " + currentGroup.getName() + "</h2></div>\n";
                 }
 
                 HTML.printPage(out, TITLE, "/forum/groups", content);
