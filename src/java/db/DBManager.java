@@ -77,7 +77,7 @@ public class DBManager implements Serializable {
     public LinkedList<Group> getUserGroups(User u) {
         LinkedList<Group> g = new LinkedList<>();
         try {
-            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ?";
+            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND visible = TRUE";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, u.getId());
@@ -613,7 +613,7 @@ public class DBManager implements Serializable {
                 stm.setInt(1, user);
                 try (ResultSet res = stm.executeQuery()) {
                     res.next();
-                    time = res.getDate("user_last_time");
+                    time = new Date(res.getTimestamp("user_last_time").getTime());
                 }
             } finally {
                 stm.close();
@@ -645,7 +645,7 @@ public class DBManager implements Serializable {
     public boolean checkIfUserCanAccessGroup(int userId, int groupId) {
         boolean x = false;
         try {
-            String query = "SELECT * FROM \"user_group\" WHERE user_id = ? AND group_id = ? AND visible = FALSE";
+            String query = "SELECT * FROM \"user_group\" WHERE user_id = ? AND group_id = ? AND visible = TRUE";
             try (PreparedStatement stm = connection.prepareStatement(query)) {
                 stm.setInt(1, userId);
                 stm.setInt(2, groupId);

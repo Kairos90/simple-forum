@@ -8,7 +8,7 @@ CREATE TABLE "user" (
 user_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 user_name VARCHAR(50),
 user_password VARCHAR(50),
-user_last_time TIMESTAMP,
+user_last_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (user_id),
 UNIQUE (user_name)
 );
@@ -34,8 +34,8 @@ CREATE INDEX post_date_index ON "post"(post_date);
 CREATE TABLE "user_group" (
 user_id INTEGER,
 group_id INTEGER,
-group_accepted BOOLEAN,
-visible BOOLEAN,
+group_accepted BOOLEAN DEFAULT FALSE,
+visible BOOLEAN DEFAULT TRUE,
 PRIMARY KEY (user_id, group_id)
 );
 

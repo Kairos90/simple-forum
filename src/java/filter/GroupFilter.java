@@ -39,9 +39,9 @@ public class GroupFilter implements Filter {
         if (id != null && !"0".equals(id)) {
             int idParam = Integer.parseInt(id);
             if (manager.checkIfUserCanAccessGroup(user.getId(), idParam)) {
-                ((HttpServletResponse) response).sendRedirect("/forum");
-            } else {
                 chain.doFilter(request, response);
+            } else {
+                ((HttpServletResponse) response).sendRedirect("/forum");
             }
         } else {
             chain.doFilter(request, response);

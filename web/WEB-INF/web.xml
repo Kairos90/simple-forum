@@ -5,87 +5,6 @@
         <listener-class>listener.ContextListener</listener-class>
     </listener>
     
-    <filter>
-        <filter-name>
-            LoginFilter
-        </filter-name>
-        <filter-class>
-            filter.LoginFilter
-        </filter-class>
-    </filter>
-    
-    <filter>
-        <filter-name>
-            GroupManagerFilter
-        </filter-name>
-        <filter-class>
-            filter.GroupManagerFilter
-        </filter-class>
-    </filter>
-    
-    <filter>
-        <filter-name>
-            GroupFilter
-        </filter-name>
-        <filter-class>
-            filter.GroupFilter
-        </filter-class>
-    </filter>
-    
-    <filter>
-        <filter-name>
-            GroupFilesFilter
-        </filter-name>
-        <filter-class>
-            filter.GroupFilesFilter
-        </filter-class>
-    </filter>
-    
-    <filter-mapping>
-        <filter-name>
-            LoginFilter
-        </filter-name>
-        <url-pattern>
-            /forum/*
-        </url-pattern>
-    </filter-mapping>
-    
-    <filter-mapping>
-        <filter-name>
-            GroupManagerFilter
-        </filter-name>
-        <url-pattern>
-            /forum/create
-        </url-pattern>
-    </filter-mapping>
-    
-    <filter-mapping>
-        <filter-name>
-            GroupManagerFilter
-        </filter-name>
-        <url-pattern>
-            /forum/pdf-generator
-        </url-pattern>
-    </filter-mapping>
-    
-    <filter-mapping>
-        <filter-name>
-            GroupFilter
-        </filter-name>
-        <url-pattern>
-            /forum/post
-        </url-pattern>
-    </filter-mapping>
-    
-    <filter-mapping>
-        <filter-name>
-            GroupFilesFilter
-        </filter-name>
-        <url-pattern>
-            /static/files/*
-        </url-pattern>
-    </filter-mapping>
-    
     <welcome-file-list>
         <welcome-file>login</welcome-file>
     </welcome-file-list>
@@ -176,6 +95,98 @@
         <servlet-name>Post</servlet-name>
         <url-pattern>/forum/post</url-pattern>
     </servlet-mapping>
+    
+    <filter>
+        <filter-name>
+            LoginFilter
+        </filter-name>
+        <filter-class>
+            filter.LoginFilter
+        </filter-class>
+    </filter>
+    
+    <filter>
+        <filter-name>
+            GroupManagerFilter
+        </filter-name>
+        <filter-class>
+            filter.GroupManagerFilter
+        </filter-class>
+    </filter>
+    
+    <filter>
+        <filter-name>
+            GroupFilter
+        </filter-name>
+        <filter-class>
+            filter.GroupFilter
+        </filter-class>
+    </filter>
+    
+    <filter>
+        <filter-name>
+            GroupFilesFilter
+        </filter-name>
+        <filter-class>
+            filter.GroupFilesFilter
+        </filter-class>
+    </filter>
+    
+    <filter-mapping>
+        <filter-name>
+            LoginFilter
+        </filter-name>
+        <url-pattern>
+            /forum/*
+        </url-pattern>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>
+            GroupManagerFilter
+        </filter-name>
+        <servlet-name>
+            GroupManager
+        </servlet-name>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>
+            GroupManagerFilter
+        </filter-name>
+        <servlet-name>
+            PdfGenertor
+        </servlet-name>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>
+            GroupFilter
+        </filter-name>
+        <servlet-name>
+            GroupPage
+        </servlet-name>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>
+            GroupFilter
+        </filter-name>
+        <servlet-name>
+            Post
+        </servlet-name>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>
+            GroupFilesFilter
+        </filter-name>
+        <url-pattern>
+            /static/files/*
+        </url-pattern>
+    </filter-mapping>
+    
+    
     <session-config>
         <session-timeout>
             30

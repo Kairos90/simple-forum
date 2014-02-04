@@ -48,7 +48,7 @@ public class GroupPage extends HttpServlet {
                 HTML.print404(out);
             } else {
                 int groupId = Integer.parseInt(id);
-                String content = "<div data-role=\"button\" data-inline=\"true\"><a href=\"/forum/post?id=" + groupId + "\">Add a Post</a></div>\n";
+                String content = "<a data-role=\"button\" data-inline=\"true\" href=\"/forum/post?id=" + groupId + "\">Add a Post</a><br><br>\n";
                 Group currentGroup = manager.getGroup(groupId);
                 LinkedList<Post> postOf = manager.getGroupPosts(currentGroup);
                 Iterator<Post> i = postOf.iterator();
@@ -59,24 +59,18 @@ public class GroupPage extends HttpServlet {
                         Iterator<String> key = postFile.keySet().iterator();
                         content += "<div class=\"ui-grid-a ui-responsive\">\n"
                                 + "            <div class=\"ui-block-a\" style=\"width: 20%\">\n"
-                                + "              <div>\n"
-                                + "                 <img style=\"max-width: 100%; height: auto\" src=\"" + current.getCreator().getAvatar(request) + "\">\n"
-                                + "              </div>\n"
-                                + "              <p>\n"
-                                + current.getCreator().getName() + "\n"
-                                + "              </p>\n"
+                                + "                 " + current.getCreator().getName() + "<br>\n"
+                                + "                 <img style=\"max-width: 100px\" src=\"" + current.getCreator().getAvatar(request) + "\">\n"
                                 + "            </div>\n"
                                 + "            <div class=\"ui-block-b\" style=\"width: 80%\">\n"
-                                + current.getText() + "\n"
-                                + "            </div>\n"
-                                + "             <div class=\"ui-block-b\" style=\"width: 80%\">\n";
+                                + "                 <p>" + current.getText() + "\n</p>";
+                        
                         while (key.hasNext()) {
                             String keyUse = key.next();
-                            String filePath = "\\static\\files\\" + currentGroup.getId() + "\\";
-                            content += "<a target=\"_blank\" href=\"" + filePath + postFile.get(keyUse).getName() + "\">" + postFile.get(keyUse).getName() + "</a>\n";
+                            String filePath = "/static/files/" + currentGroup.getId() + "/";
+                            content += "<a target=\"_blank\" href=\"" + filePath + postFile.get(keyUse).getName() + "\">" + postFile.get(keyUse).getName() + "</a><br>\n";
                         }
-                        content += "            </div>\n"
-                                + "        </div>";
+                        content += "            </div></div><hr>\n";
                     }
                 } else {
                     content += "<div class=\"ui-body ui-body-d ui-corner-all\"><h2>There are no posts in " + currentGroup.getName() + "</h2></div>\n";

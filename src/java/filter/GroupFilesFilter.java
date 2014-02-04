@@ -35,13 +35,13 @@ public class GroupFilesFilter implements Filter {
         if (user != null) {
             DBManager manager = (DBManager) request.getServletContext().getAttribute("dbmanager");
             HttpServletRequest req = (HttpServletRequest) request;
-            String requestUri = req.getRequestURI();
+            String requestUri = req.getRequestURI().substring(14);
             try {
                 int groupId = Integer.parseInt(requestUri.substring(0, requestUri.indexOf('/')));
                 if (manager.checkIfUserCanAccessGroup(user.getId(), groupId)) {
-                    ((HttpServletResponse) response).sendRedirect("/forum");
-                } else {
                     chain.doFilter(request, response);
+                } else {
+                    ((HttpServletResponse) response).sendRedirect("/forum");
                 }
                 return;
             } catch (Exception e) {

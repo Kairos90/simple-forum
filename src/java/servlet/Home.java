@@ -72,18 +72,24 @@ public class Home extends HttpServlet {
                     + "You logged in " + new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(loginTime)
                     + "</p>";
         }
-        String upToDate = "<ul data-role=\"listview\" data-inset=\"true\">\n";
+        welcomeMessage += "</li></ul>";
+
         Date lastDate = (Date) request.getAttribute("lastTimeLogged");
-        LinkedList<Post> lastPosts = lastDate != null ? dbmanager.getPostsFromDate(lastDate, user) : null;
-        Iterator<Post> i = lastPosts.iterator();
-        while(i.hasNext()) {
-            Post considering = i.next();
-            upToDate += "<div class=\"ui-body ui-body-d ui-corner-all\"><li>" + considering.getGroup().getName() + "</li>"
-                    + "<li>" + considering.getDate() + "</li></div>\n";
+        String upToDate = "";
+        if (lastDate != null) {
+            upToDate = "<ul data-role=\"listview\" data-inset=\"true\">\n";
+
+            LinkedList<Post> lastPosts = dbmanager.getPostsFromDate(lastDate, user);
+            Iterator<Post> i = lastPosts.iterator();
+            while (i.hasNext()) {
+                Post considering = i.next();
+                upToDate += "<li><h2>" + considering.getGroup().getName() + "</h2>"
+                        + "<p>" + considering.getDate() + "</p></li>\n";
+            }
+            upToDate += "</ul>";
         }
 
-        upToDate += "</ul>";
-        welcomeMessage += "</li></ul>";
+        
         HTML.printPage(out, "Forum home", welcomeMessage + CONTENT_HTML + upToDate);
     }
 
