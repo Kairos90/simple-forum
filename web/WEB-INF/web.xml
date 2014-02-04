@@ -132,6 +132,10 @@
         <servlet-name>Invites</servlet-name>
         <servlet-class>servlet.Invites</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Post</servlet-name>
+        <servlet-class>servlet.Post</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/forum</url-pattern>
@@ -167,6 +171,10 @@
     <servlet-mapping>
         <servlet-name>Invites</servlet-name>
         <url-pattern>/forum/invites</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Post</servlet-name>
+        <url-pattern>/forum/post</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

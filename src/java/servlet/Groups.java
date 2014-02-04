@@ -32,7 +32,6 @@ public class Groups extends HttpServlet {
             + "         <thead>\n"
             + "           <tr class=\"ui-bar-d\">\n"
             + "             <th>Group Name</th>\n"
-            + "             <th>News</th>\n"
             + "             <th>Latest Post</th>\n"
             + "             <th><abbr title=\"Rotten Tomato Rating\">Modify</abbr></th>\n"
             + "             <th>Summerize</th>\n"
@@ -82,8 +81,7 @@ public class Groups extends HttpServlet {
                 groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
             } else {
                 groupsContentBodyTable += "<tr>\n"
-                        + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n"      //Group Name
-                        + "             <td></td>\n";
+                        + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n";      //Group Name
                 if (manager.getLatestPost(groupConsidering) != null) {
                     groupsContentBodyTable += "<td>" + manager.getLatestPost(groupConsidering) + "</td>\n";                                 //Latest Post
                 } else {

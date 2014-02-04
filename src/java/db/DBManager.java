@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -498,7 +499,7 @@ public class DBManager implements Serializable {
         return groupId;
     }
 
-    public void addGroupFiles(Group group, MultipartRequest multipart) {
+    public void addGroupFiles(Post post, MultipartRequest multipart) {
         Enumeration<String> files = multipart.getFileNames();
         try {
             String query = "INSERT INTO \"file\"(post_id, file_name, file_mime, file_size) VALUES(?, ?, ?, ?)";
@@ -513,7 +514,7 @@ public class DBManager implements Serializable {
                     System.out.println(type);
                     File f = multipart.getFile(name);
                     if (f != null) {
-                        stm.setInt(1, group.getId());
+                        stm.setInt(1, post.getId());
                         stm.setString(2, filename);
                         stm.setString(3, type);
                         stm.setLong(4, f.length());
@@ -601,7 +602,46 @@ public class DBManager implements Serializable {
         }
         return user;
     }
+    
+    public Date getLastQickDisplayTime(int user) {
+        Date time = null;
+        String query = "SELECT user_last_time FROM \"user\" WHERE user_id = ?";
+        PreparedStatement stm;
+        try {
+            stm = connection.prepareStatement(query);
+            try {
+                stm.setInt(1, user);
+                try (ResultSet res = stm.executeQuery()) {
+                    res.next();
+                    time = res.getDate("user_last_time");
+                }
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return time;
+    }
 
+    public void updateQuickDisplayTime(int user) {
+        Date time = new Date();
+        String query = "UPDATE \"user\" SET user_last_time = ? WHERE user_id = ?";
+        PreparedStatement stm;
+        try {
+            stm = connection.prepareStatement(query);
+            try {
+                stm.setTimestamp(1, new Timestamp(time.getTime()));
+                stm.setInt(2, user);
+                stm.executeUpdate();
+            } finally {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public boolean checkIfUserCanAccessGroup(int userId, int groupId) {
         boolean x = false;
         try {
@@ -616,5 +656,58 @@ public class DBManager implements Serializable {
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return x;
+    }
+    public LinkedList<Post> getPostsFromDate(Date d, User user) {
+        LinkedList<Post> p = new LinkedList<>();
+        try {
+            String query = "SELECT * FROM (SELECT * FROM (SELECT post_id, group_id, post_text, post_date, user_id AS poster_id FROM \"post\") t NATURAL JOIN \"user_group\" WHERE user_id = ? AND group_accepted = TRUE AND post_date >= ? ORDER BY group_id ASC, post_date DESC) t1 JOIN \"user\" ON \"user\".user_id = poster_id";
+            try (PreparedStatement stm = connection.prepareStatement(query)) {
+                stm.setInt(1, user.getId());
+                stm.setTimestamp(2, new Timestamp(d.getTime()));
+                try (ResultSet res = stm.executeQuery()) {
+                    while (res.next()) {
+                        Group g = getGroup(res.getInt("group_id"));
+                        HashMap<String, GroupFile> files = getGroupFiles(g);
+                        p.add(
+                                new Post(
+                                        res.getInt("post_id"),
+                                        res.getString("post_text"),
+                                        res.getDate("post_date"),
+                                        new User(res.getInt("poster_id"),
+                                        res.getString("user_name")),
+                                        files,
+                                        g
+                                )
+                        );
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return p;
+    }
+    
+    public GroupFile getFile(int g, String fileName) {
+        GroupFile f = null;
+        try {
+            String query = "SELECT * FROM \"file\" NATURAL JOIN \"post\" NATURAL JOIN \"group\" WHERE group_id = ? AND file_name = ?";
+            try (PreparedStatement stm = connection.prepareStatement(query)) {
+                stm.setInt(1, g);
+                stm.setString(2, fileName);
+                try (ResultSet res = stm.executeQuery()) {
+                    if(res.next()) {
+                        f = new GroupFile(
+                                res.getString("file_name"),
+                                res.getString("file_mime"),
+                                res.getInt("file_size")
+                        );
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return f;
     }
 }

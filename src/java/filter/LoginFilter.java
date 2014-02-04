@@ -6,6 +6,7 @@
 
 package filter;
 
+import db.DBManager;
 import db.User;
 import java.io.IOException;
 import javax.servlet.Filter;
@@ -33,9 +34,14 @@ public class LoginFilter implements Filter{
             throws IOException, ServletException {
         HttpSession session = ((HttpServletRequest) request).getSession();
         User user = (User) session.getAttribute("user");
+        DBManager dbmanager = (DBManager) session.getServletContext().getAttribute("dbmanager");
         if(user == null) {
             ((HttpServletResponse) response).sendRedirect("/login");
         } else {
+            //salva l'ultima data nel databse
+            request.setAttribute("lastTimeLogged", dbmanager.getLastQickDisplayTime(user.getId()));
+            //aggiorna la data nel database
+            dbmanager.updateQuickDisplayTime(user.getId());
             chain.doFilter(request, response);
         }
     }

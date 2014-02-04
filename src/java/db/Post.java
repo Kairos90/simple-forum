@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package db;
 
 import java.sql.Date;
@@ -16,11 +15,13 @@ import java.util.regex.Pattern;
  * @author paolo
  */
 public class Post {
+
     private int id;
     private String text;
     private Date date;
     private User creator;
-    
+    private Group group;
+
     public Post(int id, String text, Date date, User creator, HashMap<String, GroupFile> groupFiles, Group group) {
         text = text.replaceAll("<", "&lt;");
         text = text.replaceAll(">", "&gt;");
@@ -28,36 +29,45 @@ public class Post {
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(text);
         String filesPath = "/static/files/" + group.getId() + "/";
-        while(m.find()) {
+        while (m.find()) {
             String g = m.group(1);
             String rep;
-            if(groupFiles.get(g) != null) {
+            if (groupFiles.get(g) != null) {
                 rep = "<a target=\"_blank\" href=\"" + filesPath + g + "\">" + g + "</a>";
             } else {
-                rep = "<a target=\"_blank\" href=\"" + g + "\">" + g + "</a>";
+                if (g.startsWith("http://") || g.startsWith("https://") || g.startsWith("ftp://") || g.startsWith("ftp://") || g.startsWith("ftps://")) {
+                    rep = "<a target=\"_blank\" href=\"" + g + "\">" + g + "</a>";
+                } else {
+                    rep = "<a target=\"_blank\" href=\"http://" + g + "\">" + g + "</a>";
+                }
             }
             text = text.replaceFirst(pattern, rep);
         }
-        
+
         this.id = id;
         this.text = text;
         this.date = date;
         this.creator = creator;
+        this.group = group;
     }
-    
+
     public int getId() {
         return this.id;
     }
-    
+
     public String getText() {
         return text;
     }
-    
+
     public Date getDate() {
         return date;
     }
-    
+
     public User getCreator() {
         return creator;
+    }
+
+    public Group getGroup() {
+        return group;
     }
 }

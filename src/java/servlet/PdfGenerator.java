@@ -5,7 +5,6 @@
  */
 package servlet;
 
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -102,13 +101,13 @@ public class PdfGenerator extends HttpServlet {
 
             report.close();
 
-            // setting some response headers
+            // SETTING SOME RESPONSE HEADER
             response.setHeader("Expires", "0");
             response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             response.setHeader("Pragma", "public");
-            // setting the content type
+            // SETTING THE CONTENT TYPE
             response.setContentType("application/pdf");
-            // the contentlength
+            // THE CONTENTLENGHT
             response.setContentLength(baos.size());
             System.out.println("ci sono");
             try (OutputStream os = response.getOutputStream()) {

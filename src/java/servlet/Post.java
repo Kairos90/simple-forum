@@ -12,6 +12,7 @@ import db.Group;
 import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -94,8 +95,10 @@ public class Post extends HttpServlet {
             MultipartRequest multipart = new MultipartRequest(request, group.getFilesRealPath(request), 10 * 1024 * 1024, "UTF-8", new DefaultFileRenamePolicy());
             String text = multipart.getParameter("text");
 
-            dbmanager.addGroupFiles(group, multipart);
             dbmanager.addPost(groupId, user.getId(), text);
+            LinkedList<db.Post> posts = dbmanager.getGroupPosts(group);
+            db.Post ultimo = posts.getLast();
+            dbmanager.addGroupFiles(ultimo, multipart);
             response.sendRedirect("/forum/group?id=" + groupId);
         }
     }
