@@ -68,33 +68,29 @@ public class Groups extends HttpServlet {
             int groupId = groupConsidering.getId();
             //SETTING TABLE DEPENDING ON OWN PROPERTY
             if (groupConsidering.getCreator() == logged.getId()) {
-                if (manager.checkIfUserCanAccessGroup(logged.getId(), groupId)) {
-                    groupsContentBodyTable += "<tr>\n"
-                            + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n";                                                                                       //News
-                    if (manager.getLatestPost(groupConsidering) != null) {
-                        groupsContentBodyTable += "<td>" + manager.getLatestPost(groupConsidering) + "</td>\n";                                 //Latest Post
-                    } else {
-                        groupsContentBodyTable += "<td></td>\n";
-                    }
-                    groupsContentBodyTable += "<td><a href=\"/forum/create?id=" + groupId + "\">Manage</a></td>\n" //Modifica
-                            + "             <td><a target=\"_blank\" href=\"/forum/pdf-generator?id=" + groupId + "\">Report</a></td>\n" //Resoconto
-                            + "           </tr>\n";
-                    groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
+                groupsContentBodyTable += "<tr>\n"
+                        + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n";                                                                                       //News
+                if (manager.getLatestPost(groupConsidering) != null) {
+                    groupsContentBodyTable += "<td>" + manager.getLatestPost(groupConsidering) + "</td>\n";                                 //Latest Post
+                } else {
+                    groupsContentBodyTable += "<td></td>\n";
                 }
+                groupsContentBodyTable += "<td><a href=\"/forum/create?id=" + groupId + "\">Manage</a></td>\n" //Modifica
+                        + "             <td><a target=\"_blank\" href=\"/forum/pdf-generator?id=" + groupId + "\">Report</a></td>\n" //Resoconto
+                        + "           </tr>\n";
+                groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
             } else {
-                if (manager.checkIfUserCanAccessGroup(logged.getId(), groupId)) {
-                    groupsContentBodyTable += "<tr>\n"
-                            + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n";      //Group Name
-                    if (manager.getLatestPost(groupConsidering) != null) {
-                        groupsContentBodyTable += "<td>" + manager.getLatestPost(groupConsidering) + "</td>\n";                                 //Latest Post
-                    } else {
-                        groupsContentBodyTable += "<td></td>\n";
-                    }
-                    groupsContentBodyTable += "<td></td>\n" //Modifica
-                            + "             <td></td>\n" //Resoconto
-                            + "           </tr>\n";
-                    groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
+                groupsContentBodyTable += "<tr>\n"
+                        + "             <th><a href=\"/forum/group?id=" + groupId + "\">" + groupConsidering.getName() + "</a></th>\n";      //Group Name
+                if (manager.getLatestPost(groupConsidering) != null) {
+                    groupsContentBodyTable += "<td>" + manager.getLatestPost(groupConsidering) + "</td>\n";                                 //Latest Post
+                } else {
+                    groupsContentBodyTable += "<td></td>\n";
                 }
+                groupsContentBodyTable += "<td></td>\n" //Modifica
+                        + "             <td></td>\n" //Resoconto
+                        + "           </tr>\n";
+                groupsContent = GROUPS_CONTENT_HEAD_TABLE + groupsContentBodyTable + groupsContentBodyTableEnd;
             }
         }
 

@@ -77,7 +77,7 @@ public class DBManager implements Serializable {
     public LinkedList<Group> getUserGroups(User u) {
         LinkedList<Group> g = new LinkedList<>();
         try {
-            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND visible = TRUE";
+            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND visible = TRUE AND group_accepted = TRUE";
             PreparedStatement stm = connection.prepareStatement(query);
             try {
                 stm.setInt(1, u.getId());
@@ -257,7 +257,7 @@ public class DBManager implements Serializable {
     public LinkedList<Group> getInvites(User user) {
         LinkedList<Group> u = new LinkedList<>();
         try {
-            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND group_accepted = FALSE";
+            String query = "SELECT * FROM \"user_group\" NATURAL JOIN \"group\" WHERE user_id = ? AND group_accepted = FALSE AND visible = TRUE";
             try (PreparedStatement stm = connection.prepareStatement(query)) {
                 stm.setInt(1, user.getId());
                 try (ResultSet res = stm.executeQuery()) {

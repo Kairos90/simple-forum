@@ -85,7 +85,7 @@ public class Home extends HttpServlet {
             while (i.hasNext()) {
                 Post considering = i.next();
                 upToDate += "<li><h2>" + considering.getGroup().getName() + "</h2>"
-                        + "<p>" + considering.getDate() + "</p></li>\n";
+                        + "<p>" + considering.getText() + "</p></li>\n";
             }
             upToDate += "</ul>";
         }
