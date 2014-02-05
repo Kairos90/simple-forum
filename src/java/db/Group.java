@@ -20,7 +20,7 @@ public class Group {
     private int creator;
 
     
-    public Group(int id, String name, int creator) {
+    Group(int id, String name, int creator) {
         this.name = name;
         this.id = id;
         this.creator = creator;

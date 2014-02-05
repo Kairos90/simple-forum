@@ -16,13 +16,13 @@ import java.util.regex.Pattern;
  */
 public class Post {
 
-    private int id;
-    private String text;
-    private Date date;
-    private User creator;
-    private Group group;
+    private final int id;
+    private final String text;
+    private final Date date;
+    private final User creator;
+    private final Group group;
 
-    public Post(int id, String text, Date date, User creator, HashMap<String, GroupFile> groupFiles, Group group) {
+    Post(int id, String text, Date date, User creator, HashMap<String, GroupFile> groupFiles, Group group) {
         text = text.replaceAll("<", "&lt;");
         text = text.replaceAll(">", "&gt;");
         String pattern = "\\$\\$([^\\s]+)\\$\\$";
