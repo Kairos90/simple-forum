@@ -12,6 +12,7 @@ import db.Post;
 import db.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -68,7 +69,7 @@ public class GroupPage extends HttpServlet {
                         while (key.hasNext()) {
                             String keyUse = key.next();
                             String filePath = "/static/files/" + currentGroup.getId() + "/";
-                            content += "<a target=\"_blank\" href=\"" + filePath + postFile.get(keyUse).getName() + "\">" + postFile.get(keyUse).getName() + "</a><br>\n";
+                            content += "<a target=\"_blank\" href=\"" + filePath + URLEncoder.encode(postFile.get(keyUse).getName(), "UTF-8") + "\">" + postFile.get(keyUse).getName() + "</a><br>\n";
                         }
                         content += "            </div></div><hr>\n";
                     }
